@@ -21,6 +21,13 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return $this->resume(...$data);
     }
 
+    public static function create(callable $callable, ...$data)
+    {
+        $coroutine = new static($callable);
+        $coroutine->resume(...$data);
+        return $coroutine;
+    }
+
     public static function id()
     {
         return static::getCurrent()->getId();

@@ -25,6 +25,6 @@ class ExampleTest extends AbstractTestCase
 
         $this->assertTrue(extension_loaded('swow'));
 
-        $this->assertSame('Swoole', Constant::ENGINE);
+        $this->assertSame('Swow', Constant::ENGINE);
     }
 }
