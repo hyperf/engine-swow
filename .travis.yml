@@ -28,9 +28,9 @@ before_install:
 install:
   - cd $TRAVIS_BUILD_DIR
   - bash ./tests/swow.install.sh
-  - php --ri swoole
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - phpenv config-add ./tests/ci.ini
+  - php --ri swow
 
 before_script:
   - cd $TRAVIS_BUILD_DIR

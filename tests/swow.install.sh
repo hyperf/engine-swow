@@ -4,7 +4,6 @@ mkdir -p swow
 tar -xf swow.tar.gz -C swow --strip-components=1
 rm swow.tar.gz
 cd swow || exit
-phpize
-./configure
-make -j "$(nproc)"
-make install
+
+composer install -o
+composer build-extension
