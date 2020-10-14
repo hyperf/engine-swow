@@ -23,7 +23,7 @@ class Coroutine extends SwowCo implements CoroutineInterface
 
     public static function create(callable $callable, ...$data)
     {
-        $coroutine = new static($callable);
+        $coroutine = new self($callable);
         $coroutine->resume(...$data);
         return $coroutine;
     }
