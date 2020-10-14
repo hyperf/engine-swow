@@ -6,6 +6,6 @@ rm swow.tar.gz
 cd swow || exit
 
 phpize
-./configure --ebable-debug
+./configure
 make -j "$(nproc)"
 make install

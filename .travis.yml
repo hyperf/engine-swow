@@ -14,6 +14,11 @@ matrix:
   allow_failures:
     - php: master
 
+addons:
+  apt:
+    packages:
+      - valgrind
+
 before_install:
   - export PHP_MAJOR="$(`phpenv which php` -r 'echo phpversion();' | cut -d '.' -f 1)"
   - export PHP_MINOR="$(`phpenv which php` -r 'echo phpversion();' | cut -d '.' -f 2)"
@@ -25,7 +30,7 @@ install:
   - bash ./tests/swow.install.sh
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - phpenv config-add ./tests/ci.ini
-  - php --ri swow
+  - USE_ZEND_ALLOC=0 valgrind php --ri swow
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
