@@ -11,21 +11,31 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine;
 
-use Hyperf\Contract\ResponseEmitterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Swow\Http\Server\Session;
 use function Swow\Http\packResponse;
 
-class ResponseEmitter implements ResponseEmitterInterface
+class ResponseEmitter extends \Hyperf\HttpServer\ResponseEmitter
 {
     /**
      * @param Session $connection
      */
     public function emit(ResponseInterface $response, $connection, bool $withContent = true)
     {
+        if ($connection instanceof \Swoole\Http\Response) {
+            return parent::emit($response, $connection, $withContent);
+        }
+        $headers = $response->getHeaders();
+        $body = $response->getBody()->getContents();
+        if ($connection->isKeepAlive() !== null) {
+            $headers['Connection'] = $connection->isKeepAlive() ? 'Keep-Alive' : 'Closed';
+        }
+        if (! $response->hasHeader('Content-Length')) {
+            $headers['Content-Length'] = strlen($body);
+        }
         $connection->write([
-            packResponse($response->getStatusCode(), $response->getHeaders()),
-            $response->getBody()->getContents(),
+            packResponse($response->getStatusCode(), $headers),
+            $body,
         ]);
     }
 }

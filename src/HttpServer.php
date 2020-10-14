@@ -78,7 +78,7 @@ class HttpServer extends Server
                                 }
                             }
                         } catch (\Throwable $exception) {
-                            $this->logger->error((string) $exception);
+                            // $this->logger->error((string) $exception);
                         } finally {
                             $session->close();
                         }

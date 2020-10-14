@@ -11,15 +11,13 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine;
 
-use Hyperf\Contract\ResponseEmitterInterface;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'dependencies' => [
-                ResponseEmitterInterface::class => ResponseEmitter::class,
+                \Hyperf\HttpServer\ResponseEmitter::class => ResponseEmitter::class,
             ],
         ];
     }
