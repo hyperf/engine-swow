@@ -72,8 +72,19 @@ class ChannelTest extends AbstractTestCase
         /** @var ChannelInterface $channel */
         $channel = new Channel();
         $this->assertTrue($channel->isAvailable());
-        $channel->close();
+        Coroutine::create(function () use ($channel) {
+            usleep(1000);
+            $channel->close();
+        });
         $channel->pop();
         $this->assertFalse($channel->isAvailable());
+    }
+
+    public function testChannelTimeout()
+    {
+        /** @var ChannelInterface $channel */
+        $channel = new Channel();
+        $channel->pop(0.001);
+        $this->assertTrue($channel->isTimeout());
     }
 }

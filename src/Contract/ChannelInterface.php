@@ -21,10 +21,10 @@ interface ChannelInterface
     public function push($data, int $timeout = -1);
 
     /**
-     * @param int $timeout [optional] = -1
+     * @param float $timeout seconds [optional] = -1
      * @return mixed
      */
-    public function pop(int $timeout = -1);
+    public function pop($timeout = -1);
 
     /**
      * @return mixed
@@ -80,4 +80,9 @@ interface ChannelInterface
      * @return bool
      */
     public function isClosing();
+
+    /**
+     * @return bool
+     */
+    public function isTimeout();
 }

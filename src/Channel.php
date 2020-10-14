@@ -16,12 +16,17 @@ use Swow\Channel\Exception;
 
 class Channel extends \Swow\Channel implements ChannelInterface
 {
-    public function pop(int $timeout = -1)
+    public function pop($timeout = -1)
     {
         try {
-            return parent::pop($timeout);
+            return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
         } catch (Exception $exception) {
             return false;
         }
+    }
+
+    public function isTimeout()
+    {
+        return $this->isAvailable();
     }
 }
