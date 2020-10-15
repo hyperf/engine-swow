@@ -67,7 +67,6 @@ class HttpServer extends Server
                                 $request = null;
                                 try {
                                     $request = $session->recvHttpRequest();
-                                    $path = $request->getPath();
                                     $handler = $this->handler;
                                     $handler($request, $session);
                                 } catch (HttpException $exception) {
