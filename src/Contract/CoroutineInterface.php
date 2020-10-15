@@ -42,4 +42,8 @@ interface CoroutineInterface
      * @return int
      */
     public static function id();
+
+    public static function set(array $config);
+
+    public static function getContext();
 }
