@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use Hyperf\Engine\Channel;
 use Hyperf\Engine\Contract\CoroutineInterface;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Engine\Exception\CoroutineDestroyedException;
@@ -97,5 +98,39 @@ class CoroutineTest extends AbstractTestCase
     public function testCoroutineInTopCoroutine()
     {
         $this->assertSame(0, Coroutine::pid());
+    }
+
+    public function testCoroutineDefer()
+    {
+        $channel = new Channel(2);
+        Coroutine::create(function () use ($channel) {
+            Coroutine::defer(function () use ($channel) {
+                $channel->push(2);
+            });
+
+            $channel->push(1);
+        });
+
+        $this->assertSame(1, $channel->pop());
+        $this->assertSame(2, $channel->pop());
+    }
+
+    public function testTheOrderForCoroutineDefer()
+    {
+        $channel = new Channel(3);
+        Coroutine::create(function () use ($channel) {
+            Coroutine::defer(function () use ($channel) {
+                $channel->push(2);
+            });
+            Coroutine::defer(function () use ($channel) {
+                $channel->push(3);
+            });
+
+            $channel->push(1);
+        });
+
+        $this->assertSame(1, $channel->pop());
+        $this->assertSame(3, $channel->pop());
+        $this->assertSame(2, $channel->pop());
     }
 }

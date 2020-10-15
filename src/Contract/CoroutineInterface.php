@@ -22,13 +22,6 @@ interface CoroutineInterface
     public function __construct(callable $callable);
 
     /**
-     * @param callable $callable [required]
-     * @param mixed ...$data
-     * @return $this
-     */
-    public static function create(callable $callable, ...$data);
-
-    /**
      * @param mixed ...$data
      * @return $this
      */
@@ -38,6 +31,13 @@ interface CoroutineInterface
      * @return int
      */
     public function getId();
+
+    /**
+     * @param callable $callable [required]
+     * @param mixed ...$data
+     * @return $this
+     */
+    public static function create(callable $callable, ...$data);
 
     /**
      * @return int
@@ -52,6 +52,9 @@ interface CoroutineInterface
      */
     public static function pid(?int $id = null);
 
+    /**
+     * Set config to coroutine.
+     */
     public static function set(array $config);
 
     /**
@@ -59,4 +62,9 @@ interface CoroutineInterface
      * @return null|\ArrayObject
      */
     public static function getContextFor(?int $id = null);
+
+    /**
+     * Execute callback when coroutine destruct.
+     */
+    public static function defer(callable $callable);
 }

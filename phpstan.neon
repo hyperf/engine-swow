@@ -7,5 +7,4 @@ parameters:
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - '#Class Swoole\\Http\\Response not found#'
-    - '#Call to an undefined method Swow\\Coroutine::getContext#'
-    - '#Call to an undefined method Swow\\Coroutine::getParentId#'
+    - '#Call to an undefined method Swow\\Coroutine::.*#'

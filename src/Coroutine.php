@@ -28,6 +28,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
      */
     protected $parentId;
 
+    /**
+     * @var callable[]
+     */
+    protected $deferCallbacks = [];
+
     public function __construct(callable $callable)
     {
         parent::__construct($callable);
@@ -35,9 +40,31 @@ class Coroutine extends SwowCo implements CoroutineInterface
         $this->parentId = static::getCurrent()->getId();
     }
 
+    public function __destruct()
+    {
+        foreach ($this->deferCallbacks as $callback) {
+            $callback();
+        }
+    }
+
     public function execute(...$data)
     {
         return $this->resume(...$data);
+    }
+
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    public function getParentId(): int
+    {
+        return $this->parentId;
+    }
+
+    public function addDefer(callable $callable)
+    {
+        array_unshift($this->deferCallbacks, $callable);
     }
 
     public static function create(callable $callable, ...$data)
@@ -74,16 +101,6 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
     }
 
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    public function getParentId(): int
-    {
-        return $this->parentId;
-    }
-
     public static function getContextFor(?int $id = null)
     {
         if ($id === null) {
@@ -93,5 +110,10 @@ class Coroutine extends SwowCo implements CoroutineInterface
             return $coroutine->getContext();
         }
         return null;
+    }
+
+    public static function defer(callable $callable)
+    {
+        static::getCurrent()->addDefer($callable);
     }
 }
