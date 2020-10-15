@@ -27,10 +27,14 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",
-        "hyperf/contract": "^2.1",
         "hyperf/http-server": "^2.1",
         "phpstan/phpstan": "^0.12",
-        "phpunit/phpunit": "^9.4"
+        "phpunit/phpunit": "^9.4",
+        "psr/log": "^1.0"
+    },
+    "suggest": {
+        "hyperf/http-server": "Required to use ResponseEmitter.",
+        "psr/log": "Required to use HttpServer."
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

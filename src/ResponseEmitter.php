@@ -11,11 +11,12 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine;
 
+use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
 use Swow\Http\Server\Session;
 use function Swow\Http\packResponse;
 
-class ResponseEmitter extends \Hyperf\HttpServer\ResponseEmitter
+class ResponseEmitter extends Emitter
 {
     /**
      * @param Session $connection
