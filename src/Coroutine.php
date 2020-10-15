@@ -45,6 +45,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return static::getCurrent()->getId();
     }
 
+    public static function pid()
+    {
+        return static::getCurrent()->getPrevious()->getId();
+    }
+
     public static function set(array $config)
     {
     }

@@ -43,6 +43,11 @@ interface CoroutineInterface
      */
     public static function id();
 
+    /**
+     * @return int
+     */
+    public static function pid();
+
     public static function set(array $config);
 
     /**

@@ -62,4 +62,19 @@ class CoroutineTest extends AbstractTestCase
         usleep(1000);
         $this->assertNull(Coroutine::getContextFor($coroutine->getId()));
     }
+
+    public function testCoroutinePid()
+    {
+        $pid = Coroutine::id();
+        Coroutine::create(function () use ($pid) {
+            $this->assertSame($pid, Coroutine::pid());
+            $pid = Coroutine::id();
+            Coroutine::create(function () use ($pid) {
+                $this->assertSame($pid, Coroutine::pid());
+            });
+            Coroutine::create(function () use ($pid) {
+                $this->assertSame($pid, Coroutine::pid());
+            });
+        });
+    }
 }
