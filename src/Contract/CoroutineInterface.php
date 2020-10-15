@@ -11,7 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine\Contract;
 
-use Hyperf\Engine\Exception\RuntimeException;
+use Hyperf\Engine\Exception\CoroutineDestroyedException;
+use Hyperf\Engine\Exception\RunningInNonCoroutineException;
 
 interface CoroutineInterface
 {
@@ -46,7 +47,8 @@ interface CoroutineInterface
     /**
      * Returns the parent coroutine ID.
      * Returns 0 when running in the top level coroutine.
-     * @throws RuntimeException when running in non-coroutine context
+     * @throws RunningInNonCoroutineException when running in non-coroutine context
+     * @throws CoroutineDestroyedException when the coroutine has been destroyed
      */
     public static function pid(?int $id = null);
 
