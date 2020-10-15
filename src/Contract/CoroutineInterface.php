@@ -17,10 +17,8 @@ interface CoroutineInterface
 {
     /**
      * @param callable $callable [required]
-     * @param int $stackPageSize [optional] = 0
-     * @param int $stackSize [optional] = 0
      */
-    public function __construct(callable $callable, int $stackPageSize = 0, int $stackSize = 0);
+    public function __construct(callable $callable);
 
     /**
      * @param callable $callable [required]

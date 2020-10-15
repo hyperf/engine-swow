@@ -28,9 +28,9 @@ class Coroutine extends SwowCo implements CoroutineInterface
      */
     protected $parentId;
 
-    public function __construct(callable $callable, int $stackPageSize = 0, int $stackSize = 0)
+    public function __construct(callable $callable)
     {
-        parent::__construct($callable, $stackPageSize, $stackSize);
+        parent::__construct($callable);
         $this->context = new ArrayObject();
         $this->parentId = static::getCurrent()->getId();
     }
