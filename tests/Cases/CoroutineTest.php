@@ -63,6 +63,8 @@ class CoroutineTest extends AbstractTestCase
 
         usleep(1000);
         $this->assertNull(Coroutine::getContextFor($coroutine->getId()));
+
+        $this->assertInstanceOf(\ArrayObject::class, Coroutine::getContextFor());
     }
 
     public function testCoroutinePid()

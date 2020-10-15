@@ -33,6 +33,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
      */
     protected $deferCallbacks = [];
 
+    /**
+     * @var null|ArrayObject
+     */
+    protected static $mainContext;
+
     public function __construct(callable $callable)
     {
         parent::__construct($callable);
@@ -103,13 +108,17 @@ class Coroutine extends SwowCo implements CoroutineInterface
 
     public static function getContextFor(?int $id = null)
     {
-        if ($id === null) {
-            return static::getCurrent()->getContext();
+        $coroutine = is_null($id) ? static::getCurrent() : static::get($id);
+        if ($coroutine === null) {
+            return null;
         }
-        if ($coroutine = static::get($id)) {
+        if ($coroutine instanceof static) {
             return $coroutine->getContext();
         }
-        return null;
+        if (static::$mainContext === null) {
+            static::$mainContext = new ArrayObject();
+        }
+        return static::$mainContext;
     }
 
     public static function defer(callable $callable)
