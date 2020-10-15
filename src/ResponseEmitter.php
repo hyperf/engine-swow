@@ -28,7 +28,7 @@ class ResponseEmitter extends \Hyperf\HttpServer\ResponseEmitter
         $headers = $response->getHeaders();
         $body = $response->getBody()->getContents();
         if ($connection->getKeepAlive() !== null) {
-            $headers['Connection'] = $connection->isKeepAlive() ? 'Keep-Alive' : 'Closed';
+            $headers['Connection'] = $connection->getKeepAlive() ? 'Keep-Alive' : 'Closed';
         }
         if (! $response->hasHeader('Content-Length')) {
             $headers['Content-Length'] = strlen($body);

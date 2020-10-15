@@ -47,7 +47,7 @@
     },
     "scripts": {
         "test": "phpunit -c phpunit.xml --colors=always",
-        "analyse": "phpstan analyse --memory-limit 1024M -l 0 ./src",
+        "analyse": "phpstan analyse --memory-limit 1024M -l 2 -c phpstan.neon ./src",
         "cs-fix": "php-cs-fixer fix $1"
     }
 }
