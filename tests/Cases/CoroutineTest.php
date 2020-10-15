@@ -13,6 +13,7 @@ namespace HyperfTest\Cases;
 
 use Hyperf\Engine\Contract\CoroutineInterface;
 use Hyperf\Engine\Coroutine;
+use Hyperf\Engine\Exception\CoroutineDestroyedException;
 
 /**
  * @internal
@@ -69,12 +70,32 @@ class CoroutineTest extends AbstractTestCase
         Coroutine::create(function () use ($pid) {
             $this->assertSame($pid, Coroutine::pid());
             $pid = Coroutine::id();
-            Coroutine::create(function () use ($pid) {
-                $this->assertSame($pid, Coroutine::pid());
+            $co = Coroutine::create(function () use ($pid) {
+                $this->assertSame($pid, Coroutine::pid(Coroutine::id()));
+                usleep(1000);
             });
             Coroutine::create(function () use ($pid) {
                 $this->assertSame($pid, Coroutine::pid());
             });
+            $this->assertSame($pid, Coroutine::pid($co->getId()));
         });
+    }
+
+    public function testCoroutinePidHasBeenDestroyed()
+    {
+        $co = Coroutine::create(function () {
+        });
+
+        try {
+            Coroutine::pid($co->getId());
+            $this->assertTrue(false);
+        } catch (\Throwable $exception) {
+            $this->assertInstanceOf(CoroutineDestroyedException::class, $exception);
+        }
+    }
+
+    public function testCoroutineInTopCoroutine()
+    {
+        $this->assertSame(0, Coroutine::pid());
     }
 }

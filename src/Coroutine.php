@@ -13,6 +13,7 @@ namespace Hyperf\Engine;
 
 use ArrayObject;
 use Hyperf\Engine\Contract\CoroutineInterface;
+use Hyperf\Engine\Exception\CoroutineDestroyedException;
 use Swow\Coroutine as SwowCo;
 
 class Coroutine extends SwowCo implements CoroutineInterface
@@ -22,10 +23,16 @@ class Coroutine extends SwowCo implements CoroutineInterface
      */
     protected $context;
 
+    /**
+     * @var int
+     */
+    protected $parentId;
+
     public function __construct(callable $callable, int $stackPageSize = 0, int $stackSize = 0)
     {
         parent::__construct($callable, $stackPageSize, $stackSize);
         $this->context = new ArrayObject();
+        $this->parentId = static::getCurrent()->getId();
     }
 
     public function execute(...$data)
@@ -45,9 +52,22 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return static::getCurrent()->getId();
     }
 
-    public static function pid()
+    public static function pid(?int $id = null)
     {
-        return static::getCurrent()->getPrevious()->getId();
+        if ($id === null) {
+            $coroutine = static::getCurrent();
+            if ($coroutine instanceof static) {
+                return static::getCurrent()->getParentId();
+            }
+            return 0;
+        }
+
+        $coroutine = static::get($id);
+        if (empty($coroutine)) {
+            throw new CoroutineDestroyedException(sprintf('Coroutine #%d has been destroyed.', $id));
+        }
+
+        return $coroutine->getParentId();
     }
 
     public static function set(array $config)
@@ -57,6 +77,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
     public function getContext()
     {
         return $this->context;
+    }
+
+    public function getParentId(): int
+    {
+        return $this->parentId;
     }
 
     public static function getContextFor(?int $id = null)
