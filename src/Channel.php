@@ -29,4 +29,9 @@ class Channel extends \Swow\Channel implements ChannelInterface
     {
         return $this->isAvailable();
     }
+
+    public function isClosing(): bool
+    {
+        return ! $this->isAvailable();
+    }
 }
