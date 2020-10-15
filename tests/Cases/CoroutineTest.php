@@ -38,4 +38,28 @@ class CoroutineTest extends AbstractTestCase
         $this->assertInstanceOf(CoroutineInterface::class, $coroutine);
         $this->assertIsInt($coroutine->getId());
     }
+
+    public function testCoroutineContext()
+    {
+        $coroutine = new Coroutine(function () {
+        });
+        $this->assertInstanceOf(\ArrayObject::class, $coroutine->getContext());
+        $coroutine->getContext()['name'] = 'Hyperf';
+        $this->assertSame('Hyperf', $coroutine->getContext()['name']);
+
+        $id = uniqid();
+        $coroutine = Coroutine::create(function () use ($id) {
+            $this->assertInstanceOf(\ArrayObject::class, Coroutine::getContextFor());
+            $this->assertFalse(isset(Coroutine::getContextFor()['name']));
+            $this->assertSame(null, Coroutine::getContextFor()['name'] ?? null);
+            Coroutine::getContextFor()['name'] = $id;
+            $this->assertSame($id, Coroutine::getContextFor()['name']);
+            usleep(1000);
+        });
+
+        $this->assertSame($id, Coroutine::getContextFor($coroutine->getId())['name']);
+
+        usleep(1000);
+        $this->assertNull(Coroutine::getContextFor($coroutine->getId()));
+    }
 }

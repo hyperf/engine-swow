@@ -49,8 +49,19 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
     }
 
-    public static function getContext()
+    public function getContext()
     {
-        return static::getCurrent()->context;
+        return $this->context;
+    }
+
+    public static function getContextFor(?int $id = null)
+    {
+        if ($id === null) {
+            return static::getCurrent()->getContext();
+        }
+        if ($coroutine = static::get($id)) {
+            return $coroutine->getContext();
+        }
+        return null;
     }
 }
