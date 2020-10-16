@@ -123,6 +123,9 @@ class Coroutine extends SwowCo implements CoroutineInterface
 
     public static function defer(callable $callable)
     {
-        static::getCurrent()->addDefer($callable);
+        $coroutine = static::getCurrent();
+        if ($coroutine instanceof static) {
+            $coroutine->addDefer($callable);
+        }
     }
 }
