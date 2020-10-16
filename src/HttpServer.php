@@ -57,11 +57,11 @@ class HttpServer extends Server
     public function start()
     {
         $this->listen();
-        Coroutine::run(function () {
+        Coroutine::create(function () {
             while (true) {
                 try {
                     $session = $this->acceptSession();
-                    Coroutine::run(function () use ($session) {
+                    Coroutine::create(function () use ($session) {
                         try {
                             while (true) {
                                 $request = null;
