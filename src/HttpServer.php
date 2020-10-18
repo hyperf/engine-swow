@@ -12,9 +12,14 @@ declare(strict_types=1);
 namespace Hyperf\Engine;
 
 use Psr\Log\LoggerInterface;
+use Swow\Coroutine\Exception as CoroutineException;
 use Swow\Http\Exception as HttpException;
 use Swow\Http\Server;
 use Swow\Socket;
+use Swow\Socket\Exception as SocketException;
+use const Swow\Errno\EMFILE;
+use const Swow\Errno\ENFILE;
+use const Swow\Errno\ENOMEM;
 
 class HttpServer extends Server
 {
@@ -82,6 +87,14 @@ class HttpServer extends Server
                             $session->close();
                         }
                     });
+                } catch (SocketException | CoroutineException $exception) {
+                    if (in_array($exception->getCode(), [EMFILE, ENFILE, ENOMEM], true)) {
+                        $this->logger->warning('Socket resources have been exhausted.');
+                        sleep(1);
+                    } else {
+                        $this->logger->error((string) $exception);
+                        break;
+                    }
                 } catch (\Throwable $exception) {
                     $this->logger->error((string) $exception);
                 }
