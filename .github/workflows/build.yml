@@ -1,0 +1,21 @@
+name: Build Docker And Test
+
+on: [push, pull_request]
+
+jobs:
+  http-server:
+    name: Build Http Server And Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Docker
+        run: cp ./.github/workflows/Dockerfile Dockerfile && docker build . -t swow:latest
+      - name: Run Http Server
+        run: docker run --entrypoint php -p 9501:9501 -d swow:latest examples/http_server.php
+      - name: Test Http Server
+        run: |
+          curl http://127.0.0.1:9501/ -sI | grep 200
+          curl http://127.0.0.1:9501/ -s | grep Hello\ World.
+          curl http://127.0.0.1:9501/not_found -sI | grep 404
+

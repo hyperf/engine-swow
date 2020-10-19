@@ -23,9 +23,6 @@ class ResponseEmitter extends Emitter
      */
     public function emit(ResponseInterface $response, $connection, bool $withContent = true)
     {
-        if ($connection instanceof \Swoole\Http\Response) {
-            return parent::emit($response, $connection, $withContent);
-        }
         $headers = $response->getHeaders();
         $body = $response->getBody()->getContents();
         if ($connection->getKeepAlive() !== null) {

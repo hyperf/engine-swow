@@ -57,6 +57,7 @@ class HttpServer extends Server
     public function handle(callable $callable)
     {
         $this->handler = $callable;
+        return $this;
     }
 
     public function start()

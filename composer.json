@@ -27,6 +27,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",
         "hyperf/http-server": "^2.1",
+        "mockery/mockery": "^1.4",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^9.4",
         "psr/log": "^1.0"
