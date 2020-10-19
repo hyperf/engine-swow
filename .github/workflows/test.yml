@@ -1,0 +1,42 @@
+name: Swow Engine Test
+
+on: [push, pull_request]
+
+env:
+  SW_VERSION: 'develop'
+
+jobs:
+  ci:
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.os }}
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
+        php-versions: ['7.3', '7.4', '8.0']
+      max-parallel: 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          tools: phpize
+          ini-values: extension=swow
+          # coverage: pcov
+          coverage: none
+      - name: Build Swow
+        run: ./tests/swow.install.sh
+      - name: Setup Packages
+        run: composer install -o --ignore-platform-reqs
+      - name: Build Docker
+        run: cp ./.github/workflows/Dockerfile Dockerfile && docker build . -t swow:latest
+      - name: Run Server
+        run: |
+          docker run --entrypoint php -p 9501:9501 -d swow:latest examples/http_server.php
+          docker run --entrypoint php -p 9502:9502 -d swow:latest examples/tcp_server.php
+      - name: Run Test Cases
+        run: |
+          composer analyse
+          composer test

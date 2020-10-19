@@ -11,23 +11,36 @@ declare(strict_types=1);
  */
 use Hyperf\Engine\SocketServer;
 use Psr\Log\LoggerInterface;
-use Swow\Http\Buffer;
+use Swow\Buffer;
 use Swow\Socket;
+use Swow\Socket\Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-
-function to_buffer(string $body): Buffer
-{
-    return Buffer::create($body)->rewind();
-}
 
 $logger = Mockery::mock(LoggerInterface::class);
 $server = new SocketServer($logger, Socket::TYPE_TCP);
 
-$server->bind('0.0.0.0', 9501)->handle(function (Socket $socket) {
-    $socket->recv($buffer = new Buffer());
-    var_dump($buffer->rewind()->getContents());
-    $socket->write([to_buffer('xxx')]);
+$server->bind('0.0.0.0', 9502)->handle(function (Socket $socket) {
+    while (true) {
+        try {
+            $ret = $socket->recv($buffer = new Buffer());
+            if ($ret === 0) {
+                break;
+            }
+            $body = $buffer->rewind()->getContents();
+            if ($body === 'ping') {
+                $socket->write([(new Swow\Buffer())->write('pong')->rewind()]);
+            } else {
+                $socket->write([(new Swow\Buffer())->write('recv: ' . $body)->rewind()]);
+            }
+        } catch (Exception $exception) {
+            echo (string) $exception;
+            break;
+        } catch (Throwable $exception) {
+            echo (string) $exception;
+            break;
+        }
+    }
 });
 
 $server->start();

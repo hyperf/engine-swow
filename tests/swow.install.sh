@@ -8,4 +8,4 @@ cd swow || exit
 phpize
 ./configure --enable-debug
 make -j "$(nproc)"
-make install
+sudo make install
