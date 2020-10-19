@@ -22,7 +22,6 @@
     },
     "require": {
         "php": ">=7.3",
-        "ext-swow": "*",
         "swow/swow": "dev-develop"
     },
     "require-dev": {
