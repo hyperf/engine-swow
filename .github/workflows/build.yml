@@ -18,4 +18,16 @@ jobs:
           curl http://127.0.0.1:9501/ -sI | grep 200
           curl http://127.0.0.1:9501/ -s | grep Hello\ World.
           curl http://127.0.0.1:9501/not_found -sI | grep 404
-
+  tcp-server:
+    name: Build Tcp Server And Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Docker
+        run: cp ./.github/workflows/Dockerfile Dockerfile && docker build . -t swow:latest
+      - name: Run Http Server
+        run: docker run --entrypoint php -p 9501:9501 -d swow:latest examples/tcp_server.php
+      - name: Test Tcp Server
+        run: |
+          nc -vz 127.0.0.1 9501

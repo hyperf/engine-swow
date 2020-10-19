@@ -1,5 +1,5 @@
-# component-creater
+# Swow Engine
 
 ```
-composer create-project hyperf/component-creater
+composer require hyperf/engine-swow
 ```

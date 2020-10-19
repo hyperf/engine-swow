@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use Hyperf\Engine\HttpServer;
 use Hyperf\Engine\ResponseEmitter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
@@ -25,7 +26,7 @@ function to_buffer(string $body): Buffer
 
 $logger = Mockery::mock(LoggerInterface::class);
 $emiter = new ResponseEmitter();
-$server = new Hyperf\Engine\HttpServer($logger);
+$server = new HttpServer($logger);
 
 $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Session $session) use ($emiter) {
     switch ($request->getUri()->getPath()) {

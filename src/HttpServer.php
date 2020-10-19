@@ -38,6 +38,9 @@ class HttpServer extends Server
      */
     protected $handler;
 
+    /**
+     * @var LoggerInterface
+     */
     protected $logger;
 
     public function __construct(LoggerInterface $logger)
