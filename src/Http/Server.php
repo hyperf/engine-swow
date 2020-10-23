@@ -9,19 +9,20 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace Hyperf\Engine;
+namespace Hyperf\Engine\Http;
 
+use Hyperf\Engine\Coroutine;
 use Psr\Log\LoggerInterface;
 use Swow\Coroutine\Exception as CoroutineException;
 use Swow\Http\Exception as HttpException;
-use Swow\Http\Server;
+use Swow\Http\Server as HttpServer;
 use Swow\Socket;
 use Swow\Socket\Exception as SocketException;
 use const Swow\Errno\EMFILE;
 use const Swow\Errno\ENFILE;
 use const Swow\Errno\ENOMEM;
 
-class HttpServer extends Server
+class Server extends HttpServer
 {
     /**
      * @var string
