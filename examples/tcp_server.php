@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Hyperf\Engine\SocketServer;
+use Hyperf\Engine\Server;
 use Psr\Log\LoggerInterface;
 use Swow\Buffer;
 use Swow\Socket;
@@ -18,7 +18,7 @@ use Swow\Socket\Exception;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $logger = Mockery::mock(LoggerInterface::class);
-$server = new SocketServer($logger, Socket::TYPE_TCP);
+$server = new Server($logger, Socket::TYPE_TCP);
 
 $server->bind('0.0.0.0', 9502)->handle(function (Socket $socket) {
     while (true) {

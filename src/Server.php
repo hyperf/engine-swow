@@ -14,7 +14,7 @@ namespace Hyperf\Engine;
 use Psr\Log\LoggerInterface;
 use Swow\Socket;
 
-class SocketServer extends Socket
+class Server extends Socket
 {
     /**
      * @var string
