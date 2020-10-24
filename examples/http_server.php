@@ -40,7 +40,7 @@ $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Sess
             $id = uniqid();
             $response = new Response(200, [
                 'Server' => ['Hyperf'],
-                'Set-Cookies' => [
+                'Set-Cookie' => [
                     'X-Server-Id=' . $id,
                     'X-Server-Name=Hyperf',
                 ],
