@@ -36,6 +36,17 @@ $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Sess
             ], to_buffer('Hello World.'));
             $emiter->emit($response, $session);
             break;
+        case '/cookies':
+            $id = uniqid();
+            $response = new Response(200, [
+                'Server' => ['Hyperf'],
+                'Set-Cookies' => [
+                    'X-Server-Id=' . $id,
+                    'X-Server-Name=Hyperf',
+                ],
+            ], to_buffer($id));
+            $emiter->emit($response, $session);
+            break;
         default:
             $response = new Response(404, [
                 'Server' => 'Hyperf',
