@@ -24,6 +24,16 @@ function to_buffer(string $body): Buffer
     return Buffer::create($body)->rewind();
 }
 
+function parse_query(string $query): array
+{
+    $result = [];
+    foreach (explode('&', $query) as $item) {
+        [$key, $value] = explode('=', $item);
+        $result[$key] = $value;
+    }
+    return $result;
+}
+
 $logger = Mockery::mock(LoggerInterface::class);
 $emiter = new ResponseEmitter();
 $server = new Server($logger);
@@ -45,6 +55,12 @@ $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Sess
                     'X-Server-Name=Hyperf',
                 ],
             ], to_buffer($id));
+            $emiter->emit($response, $session);
+            break;
+        case '/timeout':
+            $query = parse_query($request->getUri()->getQuery());
+            sleep((int) $query['time']);
+            $response = new Response(200);
             $emiter->emit($response, $session);
             break;
         default:

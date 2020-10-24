@@ -30,7 +30,10 @@ class Client extends HttpClient implements ClientInterface
 
     public function set(array $settings)
     {
-        // TODO: 设置参数
+        // Set settings
+        if (isset($settings['timeout'])) {
+            $this->setReadTimeout(intval($settings['timeout'] * 1000));
+        }
         return $this;
     }
 
