@@ -30,6 +30,20 @@ class ClientTest extends AbstractTestCase
         $this->assertSame('Hello World.', $response->body);
     }
 
+    public function testClientJsonRequest()
+    {
+        $client = new Client('127.0.0.1', 9501);
+        $response = $client->request(
+            'POST',
+            '/',
+            ['Content-Type' => 'application/json charset=UTF-8'],
+            json_encode(['name' => 'Hyperf'], JSON_UNESCAPED_UNICODE)
+        );
+        $this->assertSame(200, $response->statusCode);
+        $this->assertSame(['Hyperf'], $response->headers['Server']);
+        $this->assertSame('Hello World.', $response->body);
+    }
+
     public function testClientCookies()
     {
         $client = new Client('127.0.0.1', 9501);

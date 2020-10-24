@@ -42,6 +42,10 @@ class Client extends HttpClient implements ClientInterface
      */
     public function request(string $method = 'GET', string $path = '/', array $headers = [], string $conotents = '', string $version = '1.1'): RawResponse
     {
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (! isset($headers['content-length'])) {
+            $headers['content-length'] = strlen($conotents);
+        }
         $this->sendRawData($method, $path, $headers, $conotents, $version);
         $result = $this->recvRawData();
         return new RawResponse(
