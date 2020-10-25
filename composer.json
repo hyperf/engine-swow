@@ -50,8 +50,10 @@
         }
     },
     "scripts": {
-        "test": "php -dextension=swow vendor/bin/phpunit -c phpunit.xml --colors=always",
-        "analyse": "php -dextension=swow vendor/bin/phpstan analyse --memory-limit 1024M -l 2 -c phpstan.neon ./src",
+        "test": "phpunit -c phpunit.xml --colors=always",
+        "analyse": "phpstan analyse --memory-limit 1024M -l 2 -c phpstan.neon ./src",
+        "s-test": "php -dextension=swow vendor/bin/phpunit -c phpunit.xml --colors=always",
+        "s-analyse": "php -dextension=swow vendor/bin/phpstan analyse --memory-limit 1024M -l 2 -c phpstan.neon ./src",
         "cs-fix": "php-cs-fixer fix $1"
     }
 }

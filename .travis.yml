@@ -35,7 +35,10 @@ install:
 before_script:
   - cd $TRAVIS_BUILD_DIR
   - composer update -o
+  - cp ./.github/workflows/Dockerfile Dockerfile && docker build . -t swow:latest
+  - docker run --entrypoint php -p 9501:9501 -d swow:latest examples/http_server.php
+  - docker run --entrypoint php -p 9502:9502 -d swow:latest examples/tcp_server.php
 
 script:
   - composer analyse
-  - composer test -- --exclude-group Server
+  - composer test
