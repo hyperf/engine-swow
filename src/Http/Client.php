@@ -17,6 +17,16 @@ use Swow\Http\Client as HttpClient;
 class Client extends HttpClient implements ClientInterface
 {
     /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var int
+     */
+    protected $port;
+
+    /**
      * TODO: Swow not support ssl.
      * @var bool
      */
@@ -24,7 +34,9 @@ class Client extends HttpClient implements ClientInterface
 
     public function __construct(string $name, int $port, bool $ssl = false)
     {
-        parent::__construct($name, $port);
+        parent::__construct();
+        $this->host = $name;
+        $this->port = $port;
         $this->ssl = $ssl;
     }
 
@@ -42,12 +54,16 @@ class Client extends HttpClient implements ClientInterface
      */
     public function request(string $method = 'GET', string $path = '/', array $headers = [], string $conotents = '', string $version = '1.1'): RawResponse
     {
+        if (! $this->isEstablished()) {
+            $this->connect($this->host, $this->port);
+        }
+
         $headers = array_change_key_case($headers, CASE_LOWER);
         if (! isset($headers['content-length'])) {
             $headers['content-length'] = strlen($conotents);
         }
-        $this->sendRawData($method, $path, $headers, $conotents, $version);
-        $result = $this->recvRawData();
+        $this->sendRaw($method, $path, $headers, $conotents, $version);
+        $result = $this->recvRaw();
         return new RawResponse(
             $result->statusCode,
             $result->headers,

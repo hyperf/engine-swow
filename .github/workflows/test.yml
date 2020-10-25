@@ -23,7 +23,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           tools: phpize
-          ini-values: extension=swow
+          # ini-values: extension=swow
           # coverage: pcov
           coverage: none
       - name: Build Swow
