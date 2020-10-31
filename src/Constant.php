@@ -11,7 +11,14 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine;
 
+use Swow\Socket;
+
 class Constant
 {
     const ENGINE = 'Swow';
+
+    public static function isCoroutineServer($server): bool
+    {
+        return $server instanceof Socket;
+    }
 }
