@@ -21,7 +21,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 function to_buffer(string $body): Buffer
 {
-    return Buffer::create($body)->rewind();
+    return Buffer::for($body)->rewind();
 }
 
 function parse_query(string $query): array

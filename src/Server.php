@@ -42,7 +42,7 @@ class Server extends Socket
         parent::__construct($type);
     }
 
-    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE): Socket
+    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE)
     {
         $this->host = $name;
         $this->port = $port;
