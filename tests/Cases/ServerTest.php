@@ -31,6 +31,7 @@ class ServerTest extends AbstractTestCase
         $socket->write([packRequest('GET', '/')]);
         $socket->recv($buffer = new Buffer());
         $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", $buffer->rewind()->getContents());
+        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", (string) $buffer);
     }
 
     /**
@@ -47,5 +48,6 @@ class ServerTest extends AbstractTestCase
         $socket->write([(new Buffer())->write('Hello World.')->rewind()]);
         $socket->recv($buffer = new Buffer());
         $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
+        $this->assertSame('recv: Hello World.', (string) $buffer);
     }
 }
