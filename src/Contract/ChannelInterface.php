@@ -16,7 +16,7 @@ interface ChannelInterface
     /**
      * @param mixed $data [required]
      * @param int $timeout [optional] = -1
-     * @return $this
+     * @return bool
      */
     public function push($data, int $timeout = -1);
 

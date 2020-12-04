@@ -21,6 +21,9 @@ use Swow\Socket\Exception;
  */
 class ClientTest extends AbstractTestCase
 {
+    /**
+     * @group Server
+     */
     public function testClientRequest()
     {
         $client = new Client('127.0.0.1', 9501);
@@ -30,6 +33,9 @@ class ClientTest extends AbstractTestCase
         $this->assertSame('Hello World.', $response->body);
     }
 
+    /**
+     * @group Server
+     */
     public function testClientJsonRequest()
     {
         $client = new Client('127.0.0.1', 9501);
@@ -44,6 +50,9 @@ class ClientTest extends AbstractTestCase
         $this->assertSame('Hello World.', $response->body);
     }
 
+    /**
+     * @group Server
+     */
     public function testClientCookies()
     {
         $client = new Client('127.0.0.1', 9501);
@@ -69,6 +78,9 @@ class ClientTest extends AbstractTestCase
         }
     }
 
+    /**
+     * @group Server
+     */
     public function testClientSocketConnectionTimeout()
     {
         try {

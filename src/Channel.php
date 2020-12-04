@@ -25,6 +25,16 @@ class Channel extends \Swow\Channel implements ChannelInterface
         }
     }
 
+    public function push($data, int $timeout = -1)
+    {
+        try {
+            parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
+            return true;
+        } catch (Exception $exception) {
+            return false;
+        }
+    }
+
     public function isTimeout()
     {
         return $this->isAvailable();
