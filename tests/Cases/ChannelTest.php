@@ -86,6 +86,10 @@ class ChannelTest extends AbstractTestCase
         $channel = new Channel(1);
         $channel->pop(0.001);
         $this->assertTrue($channel->isTimeout());
+
+        $channel->push(true);
+        $channel->pop(0.001);
+        $this->assertFalse($channel->isTimeout());
     }
 
     public function testChannelPushTimeout()

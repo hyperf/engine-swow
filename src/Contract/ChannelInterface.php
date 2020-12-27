@@ -22,7 +22,7 @@ interface ChannelInterface
 
     /**
      * @param float $timeout seconds [optional] = -1
-     * @return mixed
+     * @return mixed when pop failed, return false
      */
     public function pop($timeout = -1);
 
