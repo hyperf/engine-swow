@@ -100,4 +100,34 @@ class ChannelTest extends AbstractTestCase
         $this->assertSame(false, $channel->push(1, 1));
         $this->assertTrue($channel->isTimeout());
     }
+
+    public function testChannelIsClosing()
+    {
+        /** @var ChannelInterface $channel */
+        $channel = new Channel(1);
+        $channel->push(true);
+        $this->assertFalse($channel->isClosing());
+        $this->assertFalse($channel->isTimeout());
+        $this->assertTrue($channel->isAvailable());
+        $channel->pop();
+        $this->assertFalse($channel->isClosing());
+        $this->assertFalse($channel->isTimeout());
+        $this->assertTrue($channel->isAvailable());
+        $channel->pop(0.001);
+        $this->assertFalse($channel->isClosing());
+        $this->assertTrue($channel->isTimeout());
+        $this->assertTrue($channel->isAvailable());
+        $channel->close();
+        $this->assertTrue($channel->isClosing());
+        $this->assertFalse($channel->isTimeout());
+        $this->assertFalse($channel->isAvailable());
+        $channel->pop();
+        $this->assertTrue($channel->isClosing());
+        $this->assertFalse($channel->isTimeout());
+        $this->assertFalse($channel->isAvailable());
+        $channel->pop(0.001);
+        $this->assertTrue($channel->isClosing());
+        $this->assertFalse($channel->isTimeout());
+        $this->assertFalse($channel->isAvailable());
+    }
 }
