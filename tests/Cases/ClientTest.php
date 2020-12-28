@@ -94,4 +94,14 @@ class ClientTest extends AbstractTestCase
             $this->assertStringContainsString('Timed out', $exception->getMessage());
         }
     }
+
+    /**
+     * @group Server
+     */
+    public function testClientNotFound()
+    {
+        $client = new Client('127.0.0.1', 9501);
+        $response = $client->request('GET', '/not_found');
+        $this->assertSame(404, $response->statusCode);
+    }
 }
