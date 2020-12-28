@@ -63,6 +63,14 @@ $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Sess
             $response = new Response(200);
             $emiter->emit($response, $session);
             break;
+        case '/without-content-length':
+            $body = 'HTTP/1.1 400 Bad Request: missing required Host header
+Content-Type: text/plain; charset=utf-8
+Connection: close
+
+400 Bad Request: missing required Host header';
+            $session->write([$body]);
+            return;
         default:
             $response = new Response(404, [
                 'Server' => 'Hyperf',

@@ -104,4 +104,15 @@ class ClientTest extends AbstractTestCase
         $response = $client->request('GET', '/not_found');
         $this->assertSame(404, $response->statusCode);
     }
+
+    /**
+     * @group Server
+     */
+    public function testClientResponseWithoutContentLength()
+    {
+        $this->markTestSkipped('Parse failed when the response does not has content-length.');
+        $client = new Client('127.0.0.1', 9501);
+        $response = $client->request('GET', '/without-content-length');
+        $this->assertSame(400, $response->statusCode);
+    }
 }
