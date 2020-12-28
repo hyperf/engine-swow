@@ -67,6 +67,12 @@ class CoroutineTest extends AbstractTestCase
         $this->assertInstanceOf(\ArrayObject::class, Coroutine::getContextFor());
     }
 
+    public function testCoroutineId()
+    {
+        $this->assertIsInt($id = Coroutine::id());
+        $this->assertGreaterThan(0, $id);
+    }
+
     public function testCoroutinePid()
     {
         $pid = Coroutine::id();
