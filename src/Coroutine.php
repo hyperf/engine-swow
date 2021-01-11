@@ -106,6 +106,9 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
     }
 
+    /**
+     * @return null|\ArrayObject
+     */
     public static function getContextFor(?int $id = null)
     {
         $coroutine = is_null($id) ? static::getCurrent() : static::get($id);
