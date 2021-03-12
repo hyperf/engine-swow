@@ -15,10 +15,10 @@ interface ChannelInterface
 {
     /**
      * @param mixed $data [required]
-     * @param int $timeout [optional] = -1
+     * @param float|int $timeout [optional] = -1
      * @return bool
      */
-    public function push($data, int $timeout = -1);
+    public function push($data, $timeout = -1);
 
     /**
      * @param float $timeout seconds [optional] = -1

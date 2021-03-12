@@ -29,7 +29,7 @@ class Channel extends \Swow\Channel implements ChannelInterface
         }
     }
 
-    public function push($data, int $timeout = -1)
+    public function push($data, $timeout = -1)
     {
         try {
             $this->successed = true;
