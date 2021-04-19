@@ -52,7 +52,7 @@ class Client extends HttpClient implements ClientInterface
     /**
      * @param string[][] $headers
      */
-    public function request(string $method = 'GET', string $path = '/', array $headers = [], string $conotents = '', string $version = '1.1'): RawResponse
+    public function request(string $method = 'GET', string $path = '/', array $headers = [], string $contents = '', string $version = '1.1'): RawResponse
     {
         if (! $this->isEstablished()) {
             $this->connect($this->host, $this->port);
@@ -60,9 +60,9 @@ class Client extends HttpClient implements ClientInterface
 
         $headers = array_change_key_case($headers, CASE_LOWER);
         if (! isset($headers['content-length'])) {
-            $headers['content-length'] = strlen($conotents);
+            $headers['content-length'] = strlen($contents);
         }
-        $this->sendRaw($method, $path, $headers, $conotents, $version);
+        $this->sendRaw($method, $path, $headers, $contents, $version);
         $result = $this->recvRaw();
         return new RawResponse(
             $result->statusCode,

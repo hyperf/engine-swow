@@ -25,5 +25,5 @@ interface ClientInterface
     /**
      * @param string[][] $headers
      */
-    public function request(string $method = 'GET', string $path = '/', array $headers = [], string $conotents = '', string $version = '1.1'): RawResponse;
+    public function request(string $method = 'GET', string $path = '/', array $headers = [], string $contents = '', string $version = '1.1'): RawResponse;
 }
