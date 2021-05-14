@@ -15,7 +15,7 @@ use Swow\Socket;
 
 class Constant
 {
-    const ENGINE = 'Swow';
+    public const ENGINE = 'Swow';
 
     public static function isCoroutineServer($server): bool
     {
