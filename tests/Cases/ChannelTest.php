@@ -47,7 +47,7 @@ class ChannelTest extends AbstractTestCase
         /** @var ChannelInterface $channel */
         $channel = new Channel(1);
         Coroutine::create(function () use ($channel, $id) {
-            usleep(2000);
+            usleep(10000);
             $channel->push($id);
         });
         $t = microtime(true);

@@ -1,19 +1,19 @@
 name: Swow Engine Test
 
-on: [push, pull_request]
-
-env:
-  SW_VERSION: 'v0.1.0-nightly20210308'
+on: [ push, pull_request ]
 
 jobs:
   ci:
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} Swow ${{ matrix.sw-version }}
     runs-on: "${{ matrix.os }}"
+    env:
+      SWOW_VERSION: ${{ matrix.sw-version }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        php-versions: ['7.3', '7.4', '8.0']
-      max-parallel: 3
+        os: [ ubuntu-latest ]
+        php-version: [ '7.3', '7.4', '8.0' ]
+        sw-version: [ 'v0.1.0-nightly20210308', 'develop' ]
+      max-parallel: 6
       fail-fast: false
     steps:
       - name: Checkout
@@ -21,13 +21,26 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-versions }}
+          php-version: ${{ matrix.php-version }}
           tools: phpize
-          ini-values: extension=swow
-          # coverage: pcov
           coverage: none
+          extensions: curl,openssl
       - name: Build Swow
-        run: ./tests/swow.install.sh
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcurl4-openssl-dev
+          wget https://github.com/swow/swow/archive/"${SWOW_VERSION}".tar.gz -O swow.tar.gz
+          mkdir -p swow
+          tar -xf swow.tar.gz -C swow --strip-components=1
+          rm swow.tar.gz
+          cd swow/ext || exit
+
+          phpize
+          ./configure --enable-swow --enable-swow-debug --enable-swow-ssl --enable-swow-curl
+          make -j "$(nproc)"
+          sudo make install
+          sudo sh -c "echo extension=swow > /etc/php/${{ matrix.php-version }}/cli/conf.d/swow.ini"
+          php --ri swow
       - name: Setup Packages
         run: composer install -o
       - name: Build Docker
