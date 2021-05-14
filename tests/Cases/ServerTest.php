@@ -37,6 +37,22 @@ class ServerTest extends AbstractTestCase
     /**
      * @group Server
      */
+    public function testHttpServerRequestKeepalive()
+    {
+        $socket = new Socket();
+        $socket->connect('127.0.0.1', 9501);
+        $socket->write([packRequest('GET', '/coroutine_id')]);
+        $socket->recv($buffer = new Buffer());
+
+        $socket->write([packRequest('GET', '/coroutine_id')]);
+        $socket->recv($buffer2 = new Buffer());
+
+        $this->assertNotEquals((string) $buffer, (string) $buffer2);
+    }
+
+    /**
+     * @group Server
+     */
     public function testTcpServer()
     {
         $socket = new Socket();

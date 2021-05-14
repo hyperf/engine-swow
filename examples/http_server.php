@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+use Hyperf\Engine\Coroutine;
 use Hyperf\Engine\Http\Server;
 use Hyperf\Engine\ResponseEmitter;
 use Psr\Http\Message\RequestInterface;
@@ -71,6 +72,15 @@ Connection: close
 400 Bad Request: missing required Host header';
             $session->write([$body]);
             return;
+        case '/coroutine_id':
+            Coroutine::create(function () use ($emiter, $session) {
+                $id = Coroutine::id();
+                $response = new Response(200, [
+                    'Server' => 'Hyperf',
+                ], to_buffer((string) $id));
+                $emiter->emit($response, $session);
+            });
+            break;
         default:
             $response = new Response(404, [
                 'Server' => 'Hyperf',
