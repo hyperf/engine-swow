@@ -5,10 +5,13 @@
 # @contact  group@hyperf.io
 # @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
 
-FROM hyperf/hyperf:7.4-alpine-v3.11-swow
+ARG PHP_VERSION
+
+FROM hyperf/hyperf:${PHP_VERSION}-alpine-v3.11-swow
 LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MIT" app.name="Hyperf"
 
 ARG timezone
+ARG PHP_VERSION
 
 ENV TIMEZONE=${timezone:-"Asia/Shanghai"}
 
@@ -19,7 +22,7 @@ RUN set -ex \
     && php -m \
     && php --ri swow \
     #  ---------- some config ----------
-    && cd /etc/php7 \
+    && cd /etc/php${PHP_VERSION%\.*} \
     # - config PHP
     && { \
         echo "upload_max_filesize=128M"; \

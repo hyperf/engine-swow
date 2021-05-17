@@ -1,6 +1,10 @@
 name: Swow Engine Test
 
-on: [ push, pull_request ]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron:  '0 10 * * *'
 
 jobs:
   ci:
@@ -44,7 +48,7 @@ jobs:
       - name: Setup Packages
         run: composer install -o
       - name: Build Docker
-        run: cp ./.github/workflows/Dockerfile Dockerfile && docker build . -t swow:latest
+        run: docker build . -t swow:latest --build-arg PHP_VERSION=${{ matrix.php-version }}
       - name: Run Server
         run: |
           docker run --entrypoint php -p 9501:9501 -d swow:latest examples/http_server.php
