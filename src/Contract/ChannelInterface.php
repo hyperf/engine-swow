@@ -27,6 +27,8 @@ interface ChannelInterface
     public function pop($timeout = -1);
 
     /**
+     * Swow: When the channel is closed, all the data in it will be destroyed.
+     * Swoole: When the channel is closed, the data in it can still be popped out, but push behavior will no longer succeed.
      * @return mixed
      */
     public function close();

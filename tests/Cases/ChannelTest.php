@@ -41,6 +41,18 @@ class ChannelTest extends AbstractTestCase
         $this->assertSame($result, $actual);
     }
 
+    public function testPushClosedChannel()
+    {
+        /** @var ChannelInterface $channel */
+        $channel = new Channel(10);
+        $channel->push(111);
+        $channel->close();
+        $this->assertTrue($channel->isEmpty());
+        $channel->push(123);
+        $this->assertTrue($channel->isClosing());
+        $this->assertSame(false, $channel->pop());
+    }
+
     public function testChannelInCoroutine()
     {
         $id = uniqid();
