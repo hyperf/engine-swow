@@ -78,6 +78,12 @@ class ChannelTest extends AbstractTestCase
         });
         $this->assertFalse($channel->pop());
         $this->assertTrue($channel->isClosing());
+
+        $channel = new Channel(1);
+        Coroutine::create(function () use ($channel) {
+            $channel->close();
+        });
+        $this->assertTrue($channel->isClosing());
     }
 
     public function testChannelIsAvailable()
