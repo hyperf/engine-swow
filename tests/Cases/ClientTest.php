@@ -74,7 +74,7 @@ class ClientTest extends AbstractTestCase
         } catch (\Throwable $exception) {
             $this->assertInstanceOf(Exception::class, $exception);
             $this->assertSame(Errno\ECONNREFUSED, $exception->getCode());
-            $this->assertSame('Socket connect failed, reason: connection refused', $exception->getMessage());
+            $this->assertSame('Socket connect failed, reason: Connection refused', $exception->getMessage());
         }
     }
 
