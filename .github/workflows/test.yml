@@ -69,5 +69,128 @@ jobs:
           php examples/tcp_server.php & disown
       - name: Run Test Cases
         run: |
+          echo "::group::Start analysing"
           composer analyse
+          echo "::group::Start testing"
           composer test
+  staging-win:
+    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: ['windows-latest', 'windows-2016']
+        php-version: [ '7.3', '7.4', '8.0' ]
+        ts: [ 'nts', 'ts' ]
+        exclude:
+          - os: windows-latest
+            php-version: "7.4"
+          - os: windows-latest
+            php-version: "7.3"
+          - os: windows-2016
+            php-version: "8.0"
+          - os: windows-2016
+            php-version: "8.1"
+      max-parallel: 6
+      fail-fast: false
+    env:
+      tools_path: C:\tools\phpdev
+    steps:
+      - name: Checkout self
+        uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          coverage: none
+          extensions: curl,openssl
+        env:
+          phpts: ${{ matrix.ts }}
+      - name: Checkout Swow
+        uses: actions/checkout@v2
+        with:
+          repository: swow/swow
+          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }}
+          path: swow
+      - name: Prepare caches
+        id: cacheprepare
+        working-directory: swow
+        env:
+          UNIX_COLOR: 1
+        run: |
+          . "./.github/workflows/winext/utils.ps1" -ToolName "cacheprepare" -MaxTry 3
+          $os = "${{ matrix.os }}"
+          if($os.Equals("windows-latest") -Or $os.Equals("windows-2019")){
+            $PhpVCVer = "VS16"
+          }elseif($os.Equals("windows-2016")){
+            $PhpVCVer = "VC15"
+          }
+          function phpsdkver{
+            $headers = @{
+              "accept"="application/vnd.github.v3+json";
+              "content-type"="application/json";
+              "authorization"="Bearer ${{ secrets.GITHUB_TOKEN }}";
+            }
+            $info = fetchjson -Uri "https://api.github.com/repos/microsoft/php-sdk-binary-tools/git/ref/heads/master" -Headers $headers
+            if(!$info){
+              warn "Cannot fetch php-sdk-binary-tools info from api.github.com"
+            }else{
+              $ver = $info."object"."sha"
+              Write-Host "::set-output name=phpsdkver::$ver"
+            }
+          }
+          info "Using $PhpVCVer"
+          $ret = 1
+          phpsdkver
+          ./.github/workflows/winext/devpack.ps1 `
+            -PhpVer ${{ matrix.php-version }} `
+            -PhpArch x64 `
+            -PhpVCVer $PhpVCVer `
+            -PhpTs ${{ matrix.ts == 'ts' && '1' || '0' }} `
+            -DryRun 1 &&
+          ./.github/workflows/winext/deps.ps1 `
+            openssl,libcurl,libssh2,zlib,nghttp2 `
+            -DryRun 1 &&
+          ($ret = 0 | Out-Null)
+          exit $ret
+      - name: Cache build environments
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.tools_path }}\php-sdk-binary-tools
+            ${{ env.tools_path }}\deps\*.zip
+            ${{ env.tools_path }}\*.zip
+          key: win-v2-${{ matrix.ts }}-${{ steps.cacheprepare.outputs.devpackver }}-${{ steps.cacheprepare.outputs.downloadeddeps }}-${{ steps.cacheprepare.outputs.phpsdkver }}
+      - name: Build Swow extension
+        uses: ./swow/.github/workflows/winext
+        with:
+          ext-path: ./swow/ext
+          tools-path: ${{ env.tools_path }}
+          conf-args: --enable-swow-debug --enable-swow-ssl --enable-swow-curl
+          ext-name: swow
+          deps: openssl,libcurl,libssh2,zlib,nghttp2
+          fix-pickle: 1
+      # we donot enable swow by default in ^
+      - name: Setup Packages
+        run: composer install -o
+      - name: Run Server
+        shell: powershell
+        run: |
+          # add firewall rule
+          New-NetFirewallRule -DisplayName "allowtests" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 9500-9510
+          # netsh advfirewall firewall add rule name="allowtests" dir=in action=allow protocol=TCP localport=9500-9510
+          # use php-win to avoid it get killed when conhost exit
+          Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/http_server.php" -PassThru
+          Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/tcp_server.php" -PassThru
+      - name: Run Test Cases
+        shell: powershell
+        run: |
+          Write-Host "::group::Start analysing"
+          & composer s-analyse
+          if( 0 -Ne $LastExitCode){
+            exit 1
+          }
+          Write-Host "::group::Start testing"
+          & composer s-test
+          if( 0 -Ne $LastExitCode){
+            exit 1
+          }
