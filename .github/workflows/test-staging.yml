@@ -9,7 +9,7 @@ on:
       required: false
       default: 'develop'
   schedule:
-    - cron:  '0 10 * * *'
+    - cron: '0 10 * * *'
 
 jobs:
   staging-unix:
@@ -78,7 +78,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: ['windows-latest', 'windows-2016']
+        os: [ 'windows-latest', 'windows-2016' ]
         php-version: [ '7.3', '7.4', '8.0' ]
         ts: [ 'nts', 'ts' ]
         exclude:
