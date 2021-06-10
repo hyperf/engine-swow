@@ -1,19 +1,17 @@
-name: Swow Engine Test (staging)
+name: Test with Swow release version
 
 on:
   push:
   pull_request:
-  workflow_dispatch:
-    swow_ref:
-      description: 'Using Swow git ref'
-      required: false
-      default: 'develop'
   schedule:
     - cron:  '0 10 * * *'
 
+env:
+  SWOW_RELEASE: "v0.1.0-nightly20210601"
+
 jobs:
-  staging-unix:
-    name: Test for PHP ${{ matrix.php-version }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
+  release-unix:
+    name: Test for PHP ${{ matrix.php-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -35,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }}
+          ref: ${{ env.SWOW_RELEASE }}
           path: swow
       - name: Build Swow
         run: |
@@ -73,8 +71,8 @@ jobs:
           composer analyse
           echo "::group::Start testing"
           composer test
-  staging-win:
-    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
+  release-win:
+    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -109,7 +107,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }}
+          ref: ${{ env.SWOW_RELEASE }}
           path: swow
       - name: Prepare caches
         id: cacheprepare
