@@ -125,20 +125,32 @@ class CoroutineTest extends AbstractTestCase
 
     public function testTheOrderForCoroutineDefer()
     {
-        $channel = new Channel(3);
+        // from FunctionTest.php in hyperf/utils
+        $channel = new Channel(10);
         Coroutine::create(function () use ($channel) {
             Coroutine::defer(function () use ($channel) {
-                $channel->push(2);
+                $channel->push(0);
             });
             Coroutine::defer(function () use ($channel) {
-                $channel->push(3);
+                $channel->push(1);
+                Coroutine::defer(function () use ($channel) {
+                    $channel->push(2);
+                });
+                Coroutine::defer(function () use ($channel) {
+                    $channel->push(3);
+                });
             });
-
-            $channel->push(1);
+            Coroutine::defer(function () use ($channel) {
+                $channel->push(4);
+            });
+            $channel->push(5);
         });
 
-        $this->assertSame(1, $channel->pop());
-        $this->assertSame(3, $channel->pop());
-        $this->assertSame(2, $channel->pop());
+        $this->assertSame(5, $channel->pop(0));
+        $this->assertSame(4, $channel->pop(0));
+        $this->assertSame(1, $channel->pop(0));
+        $this->assertSame(3, $channel->pop(0));
+        $this->assertSame(2, $channel->pop(0));
+        $this->assertSame(0, $channel->pop(0));
     }
 }
