@@ -47,8 +47,8 @@ class Coroutine extends SwowCo implements CoroutineInterface
 
     public function __destruct()
     {
-        foreach ($this->deferCallbacks as $callback) {
-            $callback();
+        while (!empty($this->deferCallbacks)) {
+            array_shift($this->deferCallbacks)();
         }
     }
 
