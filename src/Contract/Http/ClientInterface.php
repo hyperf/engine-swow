@@ -15,8 +15,6 @@ use Hyperf\Engine\Http\RawResponse;
 
 interface ClientInterface
 {
-    public function __construct(string $name, int $port, bool $ssl = false);
-
     /**
      * @return $this
      */
