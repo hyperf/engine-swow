@@ -70,7 +70,7 @@ class Server extends HttpServer
         Coroutine::create(function () {
             while (true) {
                 try {
-                    $session = $this->acceptSession();
+                    $session = $this->acceptConnection();
                     Coroutine::create(function () use ($session) {
                         try {
                             while (true) {

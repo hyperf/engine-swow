@@ -16,7 +16,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
 use Swow\Http\Buffer;
 use Swow\Http\Response;
-use Swow\Http\Server\Session;
+use Swow\Http\Server\Connection;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -39,7 +39,7 @@ $logger = Mockery::mock(LoggerInterface::class);
 $emiter = new ResponseEmitter();
 $server = new Server($logger);
 
-$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Session $session) use ($emiter) {
+$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Connection $session) use ($emiter) {
     switch ($request->getUri()->getPath()) {
         case '/':
             $response = new Response(200, [

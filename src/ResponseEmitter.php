@@ -13,13 +13,13 @@ namespace Hyperf\Engine;
 
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
-use Swow\Http\Server\Session;
+use Swow\Http\Server\Connection;
 use function Swow\Http\packResponse;
 
 class ResponseEmitter extends Emitter
 {
     /**
-     * @param Session $connection
+     * @param Connection $connection
      */
     public function emit(ResponseInterface $response, $connection, bool $withContent = true)
     {
