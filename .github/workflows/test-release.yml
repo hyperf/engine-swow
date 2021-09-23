@@ -4,10 +4,10 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '0 10 * * *'
+    - cron: '0 3 * * *'
 
 env:
-  SWOW_RELEASE: "v0.1.0-nightly20210601"
+  SWOW_RELEASE: "v0.1.0-nightly20210910"
 
 jobs:
   release-unix:

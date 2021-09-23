@@ -92,7 +92,7 @@ class Server extends HttpServer
                             $session->close();
                         }
                     });
-                } catch (SocketException | CoroutineException $exception) {
+                } catch (SocketException|CoroutineException $exception) {
                     if (in_array($exception->getCode(), [EMFILE, ENFILE, ENOMEM], true)) {
                         $this->logger->warning('Socket resources have been exhausted.');
                         sleep(1);

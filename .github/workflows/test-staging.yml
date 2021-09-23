@@ -9,7 +9,7 @@ on:
       required: false
       default: 'develop'
   schedule:
-    - cron: '0 10 * * *'
+    - cron: '0 3 * * *'
 
 jobs:
   staging-unix:
