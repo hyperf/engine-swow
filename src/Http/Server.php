@@ -70,17 +70,17 @@ class Server extends HttpServer
         Coroutine::create(function () {
             while (true) {
                 try {
-                    $session = $this->acceptConnection();
-                    Coroutine::create(function () use ($session) {
+                    $connection = $this->acceptConnection();
+                    Coroutine::create(function () use ($connection) {
                         try {
                             while (true) {
                                 $request = null;
                                 try {
-                                    $request = $session->recvHttpRequest();
+                                    $request = $connection->recvHttpRequest();
                                     $handler = $this->handler;
-                                    $handler($request, $session);
+                                    $handler($request, $connection);
                                 } catch (HttpException $exception) {
-                                    $session->error($exception->getCode(), $exception->getMessage());
+                                    $connection->error($exception->getCode(), $exception->getMessage());
                                 }
                                 if (! $request || ! $request->getKeepAlive()) {
                                     break;
@@ -89,7 +89,7 @@ class Server extends HttpServer
                         } catch (\Throwable $exception) {
                             // $this->logger->error((string) $exception);
                         } finally {
-                            $session->close();
+                            $connection->close();
                         }
                     });
                 } catch (SocketException|CoroutineException $exception) {
