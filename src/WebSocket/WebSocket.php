@@ -21,7 +21,7 @@ use Swow\Http\Status;
 class WebSocket implements WebSocketInterface
 {
     /**
-     * @var Response
+     * @var Connection
      */
     protected $connection;
 
