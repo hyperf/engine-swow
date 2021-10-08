@@ -37,7 +37,7 @@ class WebSocket implements WebSocketInterface
             $this->throwBadRequestException();
         }
 
-        $this->connection->upgradeToWebSocket($this->request);
+        $this->connection->upgradeToWebSocket($request);
     }
 
     public function on(string $event, callable $callback): void
