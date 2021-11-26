@@ -142,7 +142,7 @@ class ChannelTest extends AbstractTestCase
         $this->assertFalse($channel->isClosing());
         $this->assertTrue($channel->isTimeout());
         $this->assertTrue($channel->isAvailable());
-        $this->assertNull($channel->close());
+        $this->assertTrue($channel->close());
         $this->assertTrue($channel->isClosing());
         $this->assertFalse($channel->isTimeout());
         $this->assertFalse($channel->isAvailable());

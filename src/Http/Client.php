@@ -40,13 +40,14 @@ class Client extends HttpClient implements ClientInterface
         $this->ssl = $ssl;
     }
 
-    public function set(array $settings)
+    public function set(array $settings): bool
     {
         // Set settings
         if (isset($settings['timeout'])) {
             $this->setReadTimeout(intval($settings['timeout'] * 1000));
         }
-        return $this;
+
+        return true;
     }
 
     /**

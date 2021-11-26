@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
-        php-version: [ '7.3', '7.4', '8.0' ]
+        php-version: [ '7.4', '8.0' ]
       max-parallel: 6
       fail-fast: false
     steps:
@@ -69,8 +69,6 @@ jobs:
           php examples/tcp_server.php & disown
       - name: Run Test Cases
         run: |
-          echo "::group::Start analysing"
-          composer analyse
           echo "::group::Start testing"
           composer test
   staging-win:
@@ -79,13 +77,11 @@ jobs:
     strategy:
       matrix:
         os: [ 'windows-latest', 'windows-2016' ]
-        php-version: [ '7.3', '7.4', '8.0' ]
+        php-version: [ '7.4', '8.0' ]
         ts: [ 'nts', 'ts' ]
         exclude:
           - os: windows-latest
             php-version: "7.4"
-          - os: windows-latest
-            php-version: "7.3"
           - os: windows-2016
             php-version: "8.0"
           - os: windows-2016
@@ -184,11 +180,6 @@ jobs:
       - name: Run Test Cases
         shell: powershell
         run: |
-          Write-Host "::group::Start analysing"
-          & composer s-analyse
-          if( 0 -Ne $LastExitCode){
-            exit 1
-          }
           Write-Host "::group::Start testing"
           & composer s-test
           if( 0 -Ne $LastExitCode){

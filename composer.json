@@ -21,7 +21,7 @@
         "hyperf/engine": "^1.0"
     },
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "swow/swow": "dev-develop"
     },
     "require-dev": {

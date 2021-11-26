@@ -14,40 +14,92 @@ namespace Hyperf\Engine;
 use Hyperf\Engine\Contract\ChannelInterface;
 use Swow\Channel\Exception;
 
-class Channel extends \Swow\Channel implements ChannelInterface
-{
-    protected $successed = true;
-
-    public function pop($timeout = -1)
+if (PHP_VERSION_ID > 80000) {
+    class Channel extends \Swow\Channel implements ChannelInterface
     {
-        try {
-            $this->successed = true;
-            return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
-        } catch (Exception $exception) {
-            $this->successed = false;
-            return false;
+        protected bool $successed = true;
+
+        public function pop($timeout = -1): mixed
+        {
+            try {
+                $this->successed = true;
+                return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
+            } catch (Exception $exception) {
+                $this->successed = false;
+                return false;
+            }
         }
-    }
 
-    public function push($data, $timeout = -1)
-    {
-        try {
-            $this->successed = true;
-            parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
+        public function push(mixed $data, $timeout = -1): bool
+        {
+            try {
+                $this->successed = true;
+                parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
+                return true;
+            } catch (Exception $exception) {
+                $this->successed = false;
+                return false;
+            }
+        }
+
+        public function isTimeout(): bool
+        {
+            return ! $this->successed && $this->isAvailable();
+        }
+
+        public function isClosing(): bool
+        {
+            return ! $this->isAvailable();
+        }
+
+        public function close(): bool
+        {
+            parent::close();
             return true;
-        } catch (Exception $exception) {
-            $this->successed = false;
-            return false;
         }
     }
-
-    public function isTimeout()
+} else {
+    class Channel extends \Swow\Channel implements ChannelInterface
     {
-        return ! $this->successed && $this->isAvailable();
-    }
+        protected $successed = true;
 
-    public function isClosing(): bool
-    {
-        return ! $this->isAvailable();
+        public function pop($timeout = -1)
+        {
+            try {
+                $this->successed = true;
+                return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
+            } catch (Exception $exception) {
+                $this->successed = false;
+                return false;
+            }
+        }
+
+        public function push($data, $timeout = -1)
+        {
+            try {
+                $this->successed = true;
+                parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
+                return true;
+            } catch (Exception $exception) {
+                $this->successed = false;
+                return false;
+            }
+        }
+
+        public function isTimeout()
+        {
+            return ! $this->successed && $this->isAvailable();
+        }
+
+        public function isClosing(): bool
+        {
+            return ! $this->isAvailable();
+        }
+
+        public function close(): bool
+        {
+            parent::close();
+            return true;
+        }
     }
 }

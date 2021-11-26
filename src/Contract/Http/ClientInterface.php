@@ -15,10 +15,7 @@ use Hyperf\Engine\Http\RawResponse;
 
 interface ClientInterface
 {
-    /**
-     * @return $this
-     */
-    public function set(array $settings);
+    public function set(array $settings): bool;
 
     /**
      * @param string[][] $headers
