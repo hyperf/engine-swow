@@ -21,6 +21,8 @@ if (PHP_VERSION_ID > 80000) {
 
         public function pop($timeout = -1): mixed
         {
+            $this->checkTimeout($timeout);
+
             try {
                 $this->successed = true;
                 return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
@@ -32,6 +34,8 @@ if (PHP_VERSION_ID > 80000) {
 
         public function push(mixed $data, $timeout = -1): bool
         {
+            $this->checkTimeout($timeout);
+
             try {
                 $this->successed = true;
                 parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
@@ -57,6 +61,13 @@ if (PHP_VERSION_ID > 80000) {
             parent::close();
             return true;
         }
+
+        private function checkTimeout($timeout): void
+        {
+            if (! is_int($timeout) && ! is_float($timeout)) {
+                throw new \InvalidArgumentException('timeout must be int or float.');
+            }
+        }
     }
 } else {
     class Channel extends \Swow\Channel implements ChannelInterface
@@ -65,6 +76,8 @@ if (PHP_VERSION_ID > 80000) {
 
         public function pop($timeout = -1)
         {
+            $this->checkTimeout($timeout);
+
             try {
                 $this->successed = true;
                 return parent::pop($timeout == -1 ? -1 : intval($timeout * 1000));
@@ -76,6 +89,8 @@ if (PHP_VERSION_ID > 80000) {
 
         public function push($data, $timeout = -1)
         {
+            $this->checkTimeout($timeout);
+
             try {
                 $this->successed = true;
                 parent::push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
@@ -100,6 +115,13 @@ if (PHP_VERSION_ID > 80000) {
         {
             parent::close();
             return true;
+        }
+
+        private function checkTimeout($timeout): void
+        {
+            if (! is_int($timeout) && ! is_float($timeout)) {
+                throw new \InvalidArgumentException('timeout must be int or float.');
+            }
         }
     }
 }
