@@ -36,16 +36,20 @@ function parse_query(string $query): array
 }
 
 $logger = Mockery::mock(LoggerInterface::class);
-$emiter = new ResponseEmitter();
+$logger->shouldReceive('error')->withAnyArgs()->andReturnUsing(static function ($args) {
+    echo $args . PHP_EOL;
+});
+
+$emitter = new ResponseEmitter();
 $server = new Server($logger);
 
-$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Connection $session) use ($emiter) {
+$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Connection $session) use ($emitter) {
     switch ($request->getUri()->getPath()) {
         case '/':
             $response = new Response(200, [
                 'Server' => 'Hyperf',
             ], to_buffer('Hello World.'));
-            $emiter->emit($response, $session);
+            $emitter->emit($response, $session);
             break;
         case '/cookies':
             $id = uniqid();
@@ -56,13 +60,13 @@ $server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Conn
                     'X-Server-Name=Hyperf',
                 ],
             ], to_buffer($id));
-            $emiter->emit($response, $session);
+            $emitter->emit($response, $session);
             break;
         case '/timeout':
             $query = parse_query($request->getUri()->getQuery());
             sleep((int) $query['time']);
             $response = new Response(200);
-            $emiter->emit($response, $session);
+            $emitter->emit($response, $session);
             break;
         case '/without-content-length':
             $body = 'HTTP/1.1 400 Bad Request: missing required Host header
@@ -73,19 +77,19 @@ Connection: close
             $session->write([$body]);
             return;
         case '/coroutine_id':
-            Coroutine::create(function () use ($emiter, $session) {
+            Coroutine::create(function () use ($emitter, $session) {
                 $id = Coroutine::id();
                 $response = new Response(200, [
                     'Server' => 'Hyperf',
                 ], to_buffer((string) $id));
-                $emiter->emit($response, $session);
+                $emitter->emit($response, $session);
             });
             break;
         default:
             $response = new Response(404, [
                 'Server' => 'Hyperf',
             ]);
-            $emiter->emit($response, $session);
+            $emitter->emit($response, $session);
             break;
     }
 });

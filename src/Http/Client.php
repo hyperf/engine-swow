@@ -16,21 +16,14 @@ use Swow\Http\Client as HttpClient;
 
 class Client extends HttpClient implements ClientInterface
 {
-    /**
-     * @var string
-     */
-    protected $host;
+    protected string $host;
 
-    /**
-     * @var int
-     */
-    protected $port;
+    protected int $port;
 
     /**
      * TODO: Swow not support ssl.
-     * @var bool
      */
-    private $ssl = false;
+    private bool $ssl;
 
     public function __construct(string $name, int $port, bool $ssl = false)
     {

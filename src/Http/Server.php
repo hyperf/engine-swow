@@ -24,33 +24,21 @@ use const Swow\Errno\ENOMEM;
 
 class Server extends HttpServer
 {
-    /**
-     * @var string
-     */
-    public $host;
+    public ?string $host = null;
 
-    /**
-     * @var int
-     */
-    public $port;
+    public ?int $port = null;
 
     /**
      * @var callable
      */
     protected $handler;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(protected LoggerInterface $logger)
     {
-        $this->logger = $logger;
         parent::__construct();
     }
 
-    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE)
+    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE): static
     {
         $this->host = $name;
         $this->port = $port;

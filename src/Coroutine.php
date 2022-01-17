@@ -18,25 +18,16 @@ use Swow\Coroutine as SwowCo;
 
 class Coroutine extends SwowCo implements CoroutineInterface
 {
-    /**
-     * @var ArrayObject
-     */
-    protected $context;
+    protected ArrayObject $context;
 
-    /**
-     * @var int
-     */
-    protected $parentId;
+    protected int $parentId;
 
     /**
      * @var callable[]
      */
-    protected $deferCallbacks = [];
+    protected array $deferCallbacks = [];
 
-    /**
-     * @var null|ArrayObject
-     */
-    protected static $mainContext;
+    protected static ?ArrayObject $mainContext = null;
 
     public function __construct(callable $callable)
     {
@@ -52,9 +43,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
         }
     }
 
-    public function execute(...$data)
+    public function execute(...$data): static
     {
-        return $this->resume(...$data);
+        $this->resume(...$data);
+
+        return $this;
     }
 
     public function getContext()
@@ -72,19 +65,19 @@ class Coroutine extends SwowCo implements CoroutineInterface
         array_unshift($this->deferCallbacks, $callable);
     }
 
-    public static function create(callable $callable, ...$data)
+    public static function create(callable $callable, ...$data): static
     {
         $coroutine = new self($callable);
         $coroutine->resume(...$data);
         return $coroutine;
     }
 
-    public static function id()
+    public static function id(): int
     {
         return static::getCurrent()->getId();
     }
 
-    public static function pid(?int $id = null)
+    public static function pid(?int $id = null): int
     {
         if ($id === null) {
             $coroutine = static::getCurrent();
@@ -102,14 +95,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return $coroutine->getParentId();
     }
 
-    public static function set(array $config)
+    public static function set(array $config): void
     {
     }
 
-    /**
-     * @return null|\ArrayObject
-     */
-    public static function getContextFor(?int $id = null)
+    public static function getContextFor(?int $id = null): ?ArrayObject
     {
         $coroutine = is_null($id) ? static::getCurrent() : static::get($id);
         if ($coroutine === null) {
@@ -124,7 +114,7 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return static::$mainContext;
     }
 
-    public static function defer(callable $callable)
+    public static function defer(callable $callable): void
     {
         $coroutine = static::getCurrent();
         if ($coroutine instanceof static) {

@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
-        php-version: [ '7.4', '8.0' ]
+        php-version: [ '8.0', '8.1' ]
       max-parallel: 6
       fail-fast: false
     steps:
@@ -77,7 +77,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'windows-latest', 'windows-2016' ]
-        php-version: [ '7.4', '8.0' ]
+        php-version: [ '8.0', '8.1' ]
         ts: [ 'nts', 'ts' ]
         exclude:
           - os: windows-latest

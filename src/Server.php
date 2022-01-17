@@ -16,33 +16,21 @@ use Swow\Socket;
 
 class Server extends Socket
 {
-    /**
-     * @var string
-     */
-    public $host;
+    public ?string $host = null;
 
-    /**
-     * @var int
-     */
-    public $port;
+    public ?int $port = null;
 
     /**
      * @var callable
      */
     protected $handler;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    public function __construct(LoggerInterface $logger, int $type = Socket::TYPE_TCP)
+    public function __construct(protected LoggerInterface $logger, int $type = Socket::TYPE_TCP)
     {
-        $this->logger = $logger;
         parent::__construct($type);
     }
 
-    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE)
+    public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE): static
     {
         $this->host = $name;
         $this->port = $port;

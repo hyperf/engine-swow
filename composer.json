@@ -21,7 +21,7 @@
         "hyperf/engine": "^1.0"
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "swow/swow": "dev-develop"
     },
     "require-dev": {
@@ -29,9 +29,9 @@
         "hyperf/framework": "~2.1",
         "hyperf/http-server": "^2.1",
         "mockery/mockery": "^1.4",
-        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan": "^1.0",
         "phpunit/phpunit": "^9.4",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0|^2.0|^3.0"
     },
     "suggest": {
         "hyperf/http-server": "Required to use ResponseEmitter.",
@@ -45,7 +45,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2-dev"
+            "dev-master": "1.3-dev"
         },
         "hyperf": {
             "config": "Hyperf\\Engine\\ConfigProvider"
