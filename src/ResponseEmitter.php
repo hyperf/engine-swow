@@ -21,7 +21,7 @@ class ResponseEmitter extends Emitter
     /**
      * @param Connection $connection
      */
-    public function emit(ResponseInterface $response, $connection, bool $withContent = true)
+    public function emit(ResponseInterface $response, mixed $connection, bool $withContent = true): void
     {
         $headers = $response->getHeaders();
         $body = $response->getBody()->getContents();
