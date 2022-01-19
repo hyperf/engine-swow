@@ -18,6 +18,7 @@ use Swow\Http\Exception as HttpException;
 use Swow\Http\Server as HttpServer;
 use Swow\Socket;
 use Swow\Socket\Exception as SocketException;
+use function Swow\Sync\waitAll;
 use const Swow\Errno\EMFILE;
 use const Swow\Errno\ENFILE;
 use const Swow\Errno\ENOMEM;
@@ -93,5 +94,7 @@ class Server extends HttpServer
                 }
             }
         });
+
+        waitAll();
     }
 }
