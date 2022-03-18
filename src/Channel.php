@@ -13,7 +13,7 @@ namespace Hyperf\Engine;
 
 use Hyperf\Engine\Contract\ChannelInterface;
 use Swow\Channel as SwowChannel;
-use Swow\Channel\Exception;
+use Swow\ChannelException;
 
 class Channel implements ChannelInterface
 {
@@ -31,7 +31,7 @@ class Channel implements ChannelInterface
         try {
             $this->succeeded = true;
             return $this->channel->pop($timeout == -1 ? -1 : intval($timeout * 1000));
-        } catch (Exception) {
+        } catch (ChannelException) {
             $this->succeeded = false;
             return false;
         }
@@ -43,7 +43,7 @@ class Channel implements ChannelInterface
             $this->succeeded = true;
             $this->channel->push($data, $timeout == -1 ? -1 : intval($timeout * 1000));
             return true;
-        } catch (Exception) {
+        } catch (ChannelException) {
             $this->succeeded = false;
             return false;
         }

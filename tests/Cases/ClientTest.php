@@ -13,7 +13,7 @@ namespace HyperfTest\Cases;
 
 use Hyperf\Engine\Http\Client;
 use Swow\Errno;
-use Swow\Socket\Exception;
+use Swow\SocketException;
 
 /**
  * @internal
@@ -72,8 +72,8 @@ class ClientTest extends AbstractTestCase
             $client->request('GET', '/');
             $this->assertTrue(false);
         } catch (\Throwable $exception) {
-            $this->assertInstanceOf(Exception::class, $exception);
-            $this->assertSame(Errno\ECONNREFUSED, $exception->getCode());
+            $this->assertInstanceOf(SocketException::class, $exception);
+            $this->assertSame(Errno::ECONNREFUSED, $exception->getCode());
             $this->assertSame('Connection refused', $exception->getMessage());
         }
     }

@@ -13,15 +13,13 @@ namespace Hyperf\Engine\Http;
 
 use Hyperf\Engine\Coroutine;
 use Psr\Log\LoggerInterface;
-use Swow\Coroutine\Exception as CoroutineException;
-use Swow\Http\Exception as HttpException;
+use Swow\CoroutineException;
+use Swow\Errno;
+use Swow\Http\ResponseException;
 use Swow\Http\Server as HttpServer;
 use Swow\Socket;
-use Swow\Socket\Exception as SocketException;
+use Swow\SocketException;
 use function Swow\Sync\waitAll;
-use const Swow\Errno\EMFILE;
-use const Swow\Errno\ENFILE;
-use const Swow\Errno\ENOMEM;
 
 class Server extends HttpServer
 {
@@ -68,7 +66,7 @@ class Server extends HttpServer
                                     $request = $connection->recvHttpRequest();
                                     $handler = $this->handler;
                                     $handler($request, $connection);
-                                } catch (HttpException $exception) {
+                                } catch (ResponseException $exception) {
                                     $connection->error($exception->getCode(), $exception->getMessage());
                                 }
                                 if (! $request || ! $request->getKeepAlive()) {
@@ -82,7 +80,7 @@ class Server extends HttpServer
                         }
                     });
                 } catch (SocketException|CoroutineException $exception) {
-                    if (in_array($exception->getCode(), [EMFILE, ENFILE, ENOMEM], true)) {
+                    if (in_array($exception->getCode(), [Errno::EMFILE, Errno::ENFILE, Errno::ENOMEM], true)) {
                         $this->logger->warning('Socket resources have been exhausted.');
                         sleep(1);
                     } else {
