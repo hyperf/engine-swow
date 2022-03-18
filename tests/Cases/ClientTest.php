@@ -89,8 +89,8 @@ class ClientTest extends AbstractTestCase
             $client->request('GET', '/timeout?time=1');
             $this->assertTrue(false);
         } catch (\Throwable $exception) {
-            $this->assertInstanceOf(Exception::class, $exception);
-            $this->assertSame(Errno\ETIMEDOUT, $exception->getCode());
+            $this->assertInstanceOf(SocketException::class, $exception);
+            $this->assertSame(Errno::ETIMEDOUT, $exception->getCode());
             $this->assertStringContainsString('Timed out', $exception->getMessage());
         }
     }
