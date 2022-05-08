@@ -26,7 +26,7 @@ class ServerTest extends AbstractTestCase
      */
     public function testHttpServer()
     {
-        $socket = new Socket();
+        $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
         $socket->write([packRequest('GET', '/')]);
         $socket->recv($buffer = new Buffer());
@@ -39,7 +39,7 @@ class ServerTest extends AbstractTestCase
      */
     public function testHttpServerRequestKeepalive()
     {
-        $socket = new Socket();
+        $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
         $socket->write([packRequest('GET', '/coroutine_id')]);
         $socket->recv($buffer = new Buffer());
@@ -55,7 +55,7 @@ class ServerTest extends AbstractTestCase
      */
     public function testTcpServer()
     {
-        $socket = new Socket();
+        $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9502);
         $socket->write([(new Buffer())->write('ping')->rewind()]);
         $socket->recv($buffer = new Buffer());
