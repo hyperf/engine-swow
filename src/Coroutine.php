@@ -121,4 +121,14 @@ class Coroutine extends SwowCo implements CoroutineInterface
             $coroutine->addDefer($callable);
         }
     }
+
+    /**
+     * Resume the coroutine by coroutine Id.
+     * @param mixed $data only Support Swow
+     * @return bool|mixed Swow:mixed, Swoole:bool
+     */
+    public static function resumeById(int $id, mixed ...$data): mixed
+    {
+        return parent::get($id)->resume(...$data);
+    }
 }
