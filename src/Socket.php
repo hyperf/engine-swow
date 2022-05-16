@@ -30,7 +30,12 @@ class Socket extends Swow\Socket implements SocketInterface
 
     public function recvAll(int $length = 65536, float $timeout = 0): string|false
     {
-        $this->recv($buffer = Buffer::for());
+        $buffer = Buffer::for();
+        if ($timeout > 0) {
+            $this->recv($buffer, $length, intval($timeout * 1000));
+        } else {
+            $this->recv($buffer, $length);
+        }
 
         return (string) $buffer;
     }
