@@ -13,31 +13,25 @@ namespace Hyperf\Engine;
 
 use Hyperf\Engine\Contract\SocketInterface;
 use Swow;
-use Swow\Stream\Buffer;
 
 class Socket extends Swow\Socket implements SocketInterface
 {
     public function sendAll(string $data, float $timeout = 0): int|false
     {
-        $buffer = Buffer::for($data);
         if ($timeout > 0) {
-            $this->write([$buffer], intval($timeout * 1000));
+            $this->sendString($data, intval($timeout * 1000));
         } else {
-            $this->write([$buffer]);
+            $this->sendString($data);
         }
         return strlen($data);
     }
 
     public function recvAll(int $length = 65536, float $timeout = 0): string|false
     {
-        $buffer = Buffer::for();
         if ($timeout > 0) {
-            $this->recv($buffer, $length, intval($timeout * 1000));
-        } else {
-            $this->recv($buffer, $length);
+            return $this->readString($length, intval($timeout * 1000));
         }
-
-        return (string) $buffer;
+        return $this->readString($length);
     }
 
     public function recvPacket(float $timeout = 0): string|false
