@@ -29,7 +29,7 @@ class ServerTest extends AbstractTestCase
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
         $socket->write([packRequest('GET', '/')]);
-        $socket->recv($buffer = new Buffer());
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
         $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", $buffer->rewind()->getContents());
         $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", (string) $buffer);
     }
@@ -42,10 +42,10 @@ class ServerTest extends AbstractTestCase
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
         $socket->write([packRequest('GET', '/coroutine_id')]);
-        $socket->recv($buffer = new Buffer());
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
 
         $socket->write([packRequest('GET', '/coroutine_id')]);
-        $socket->recv($buffer2 = new Buffer());
+        $socket->recv($buffer2 = new Buffer(Buffer::COMMON_SIZE));
 
         $this->assertNotEquals((string) $buffer, (string) $buffer2);
     }
@@ -57,12 +57,12 @@ class ServerTest extends AbstractTestCase
     {
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9502);
-        $socket->write([(new Buffer())->write('ping')->rewind()]);
-        $socket->recv($buffer = new Buffer());
+        $socket->write([(new Buffer(0))->write('ping')->rewind()]);
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
         $this->assertSame('pong', $buffer->rewind()->getContents());
         usleep(1000);
-        $socket->write([(new Buffer())->write('Hello World.')->rewind()]);
-        $socket->recv($buffer = new Buffer());
+        $socket->write([(new Buffer(0))->write('Hello World.')->rewind()]);
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
         $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
         $this->assertSame('recv: Hello World.', (string) $buffer);
     }

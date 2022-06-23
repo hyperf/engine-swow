@@ -21,7 +21,7 @@ class BufferTest extends AbstractTestCase
 {
     public function testBufferToString()
     {
-        $buffer = new Buffer();
+        $buffer = new Buffer(0);
         $buffer->write($data = uniqid());
         $this->assertSame('', $buffer->getContents());
         $this->assertSame($data, (string) $buffer);
