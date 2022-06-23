@@ -65,6 +65,7 @@ jobs:
         run: |
           php examples/http_server.php & disown
           php examples/tcp_server.php & disown
+          php examples/websocket_server.php & disown
       - name: Run Test Cases
         run: |
           echo "::group::Start testing"
@@ -175,6 +176,7 @@ jobs:
           # use php-win to avoid it get killed when conhost exit
           Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/http_server.php" -PassThru
           Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/tcp_server.php" -PassThru
+          Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/websocket_server.php" -PassThru
       - name: Run Test Cases
         shell: powershell
         run: |

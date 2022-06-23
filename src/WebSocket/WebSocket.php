@@ -20,17 +20,20 @@ use Swow\Http\Status;
 
 class WebSocket implements WebSocketInterface
 {
+    protected ?Connection $connection;
+
     /**
      * @var array<string, callable>
      */
     protected array $events = [];
 
-    public function __construct(protected Connection $connection, Request $request)
+    public function __construct(Connection $connection, Request $request)
     {
         if ($request->getUpgrade() !== $request::UPGRADE_WEBSOCKET) {
             $this->throwBadRequestException();
         }
 
+        $this->connection = $connection;
         $this->connection->upgradeToWebSocket($request);
     }
 
