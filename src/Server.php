@@ -25,7 +25,7 @@ class Server extends Socket
      */
     protected $handler;
 
-    public function __construct(protected LoggerInterface $logger, int $type = Socket::TYPE_TCP)
+    public function __construct(protected LoggerInterface $logger, public int $type = Socket::TYPE_TCP)
     {
         parent::__construct($type);
     }

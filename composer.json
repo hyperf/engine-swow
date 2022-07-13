@@ -15,7 +15,10 @@
     "autoload-dev": {
         "psr-4": {
             "HyperfTest\\": "tests"
-        }
+        },
+        "files": [
+            "constants.php"
+        ]
     },
     "replace": {
         "hyperf/engine": "^2.0"

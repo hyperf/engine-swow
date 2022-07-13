@@ -13,6 +13,7 @@ namespace HyperfTest\Cases;
 
 use Swow\Buffer;
 use Swow\Socket;
+
 use function Swow\Http\packRequest;
 
 /**

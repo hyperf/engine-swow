@@ -19,6 +19,7 @@ use Swow\Http\ResponseException;
 use Swow\Http\Server as HttpServer;
 use Swow\Socket;
 use Swow\SocketException;
+
 use function Swow\Sync\waitAll;
 
 class Server extends HttpServer
