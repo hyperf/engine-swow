@@ -67,4 +67,21 @@ class ServerTest extends AbstractTestCase
         $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
         $this->assertSame('recv: Hello World.', (string) $buffer);
     }
+
+    /**
+     * UdpServer Test
+     */
+    public function testUdpServer()
+    {
+        $socket = new Socket(Socket::TYPE_UDP);
+        $socket->connect('127.0.0.1', 9503);
+        $socket->write([(new Buffer())->write('ping')->rewind()]);
+        $socket->recv($buffer = new Buffer());
+        $this->assertSame('pong', $buffer->rewind()->getContents());
+        usleep(1000);
+        $socket->write([(new Buffer())->write('Hello World.')->rewind()]);
+        $socket->recv($buffer = new Buffer());
+        $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
+        $this->assertSame('recv: Hello World.', (string) $buffer);
+    }
 }

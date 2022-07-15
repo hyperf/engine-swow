@@ -13,12 +13,15 @@ namespace Hyperf\Engine;
 
 use Psr\Log\LoggerInterface;
 use Swow\Socket;
+use Swow\Buffer;
 
 class Server extends Socket
 {
     public ?string $host = null;
 
     public ?int $port = null;
+
+    public ?int $type = null;
 
     /**
      * @var callable
@@ -28,6 +31,7 @@ class Server extends Socket
     public function __construct(protected LoggerInterface $logger, public int $type = Socket::TYPE_TCP)
     {
         parent::__construct($type);
+        $this->type = $type;
     }
 
     public function bind(string $name, int $port = 0, int $flags = Socket::BIND_FLAG_NONE): static
@@ -46,9 +50,18 @@ class Server extends Socket
 
     public function start()
     {
-        $this->listen();
-        while (true) {
-            Coroutine::create($this->handler, $this->accept());
+        switch ($this->type) {
+            case $this->type === Socket::TYPE_TCP:
+                $this->listen();
+                while (true) {
+                    Coroutine::create($this->handler, $this->accept());
+                }
+            case $this->type === Socket::TYPE_UDP:
+                while (true) {
+                    $data = $this->recvStringFrom(Buffer::DEFAULT_SIZE, $clinetinfo['address'], $clinetinfo['port']);
+                    Coroutine::create($this->handler, $this, $data, $clinetinfo);
+                }
         }
+
     }
 }
