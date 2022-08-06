@@ -15,7 +15,7 @@ use Hyperf\Engine\Contract\Socket\SocketOptionInterface;
 
 class SocketOption implements SocketOptionInterface
 {
-    public function __construct(protected string $host, protected int $port, protected ?int $timeout = null, protected array $protocol = [])
+    public function __construct(protected string $host, protected int $port, protected ?float $timeout = null, protected array $protocol = [])
     {
     }
 
@@ -29,7 +29,7 @@ class SocketOption implements SocketOptionInterface
         return $this->port;
     }
 
-    public function getTimeout(): ?int
+    public function getTimeout(): ?float
     {
         return $this->timeout;
     }
