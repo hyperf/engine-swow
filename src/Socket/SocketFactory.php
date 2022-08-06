@@ -14,8 +14,10 @@ namespace Hyperf\Engine\Socket;
 use Hyperf\Engine\Contract\Socket\SocketFactoryInterface;
 use Hyperf\Engine\Contract\Socket\SocketOptionInterface;
 use Hyperf\Engine\Contract\SocketInterface;
+use Hyperf\Engine\Exception\SocketConnectException;
 use Hyperf\Engine\Socket;
 use Swow;
+use Swow\SocketException;
 
 class SocketFactory implements SocketFactoryInterface
 {
@@ -26,10 +28,14 @@ class SocketFactory implements SocketFactoryInterface
             // TODO: Set Protocol
         }
 
-        if ($option->getTimeout() === null) {
-            $socket->connect($option->getHost(), $option->getPort());
-        } else {
-            $socket->connect($option->getHost(), $option->getPort(), intval($option->getTimeout() * 1000));
+        try {
+            if ($option->getTimeout() === null) {
+                $socket->connect($option->getHost(), $option->getPort());
+            } else {
+                $socket->connect($option->getHost(), $option->getPort(), intval($option->getTimeout() * 1000));
+            }
+        } catch (SocketException $exception) {
+            throw new SocketConnectException($exception->getMessage(), $exception->getCode());
         }
 
         return $socket;

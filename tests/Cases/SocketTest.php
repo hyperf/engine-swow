@@ -11,7 +11,9 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use Hyperf\Engine\Exception\SocketConnectException;
 use Hyperf\Engine\Socket;
+use Swow\Errno;
 
 /**
  * @internal
@@ -32,5 +34,15 @@ class SocketTest extends AbstractTestCase
         $socket->sendAll('Hello World.');
         $res = $socket->recvAll(18);
         $this->assertSame('recv: Hello World.', $res);
+    }
+
+    public function testSocketConnectFailed()
+    {
+        try {
+            (new Socket\SocketFactory())->make(new Socket\SocketOption('127.0.0.1', 33333));
+        } catch (SocketConnectException $exception) {
+            $this->assertSame(Errno::ECONNREFUSED, $exception->getCode());
+            $this->assertSame('Socket connect failed, reason: Connection refused', $exception->getMessage());
+        }
     }
 }
