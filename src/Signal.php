@@ -20,7 +20,8 @@ class Signal implements SignalInterface
     public static function wait(int $signo, float $timeout = -1): bool
     {
         try {
-            SwowSignal::wait($signo, $timeout * 1000);
+            $timeout = $timeout > 0 ? $timeout * 1000 : $timeout;
+            SwowSignal::wait($signo, (int) $timeout);
         } catch (SignalException $e) {
             return false;
         }
