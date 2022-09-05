@@ -22,6 +22,10 @@ class SignalTest extends AbstractTestCase
 {
     public function testSignal()
     {
+        if (str_starts_with(strtoupper(PHP_OS), 'WIN')) {
+            $this->markTestSkipped();
+        }
+
         $res = Signal::wait(SwowSignal::USR1, 1);
         $this->assertFalse($res);
 
