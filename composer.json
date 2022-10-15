@@ -26,7 +26,7 @@
     "require": {
         "php": ">=8.0",
         "hyperf/engine-contract": "^1.0",
-        "swow/swow": "dev-develop"
+        "swow/swow": "dev-purposed/v0.2.x"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",

@@ -11,9 +11,12 @@ on:
   schedule:
     - cron: '0 3 * * *'
 
+env:
+  SW_VERSION: 'purposed/v0.2.x'
+
 jobs:
   staging-unix:
-    name: Test for PHP ${{ matrix.php-version }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'purposed/v0.2.x' }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -35,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }}
+          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'purposed/v0.2.x' }}
           path: swow
       - name: Build Swow
         run: |
@@ -73,7 +76,7 @@ jobs:
           echo "::group::Start testing"
           composer test
   staging-win:
-    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'purposed/v0.2.x' }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -99,7 +102,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }}
+          ref: ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'purposed/v0.2.x' }}
           path: swow
       - name: Prepare caches
         id: cacheprepare

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Engine\Http;
 
 use Hyperf\Engine\Contract\Http\ClientInterface;
-use Swow\Http\Client as HttpClient;
+use Swow\Psr7\Client\Client as HttpClient;
 
 class Client extends HttpClient implements ClientInterface
 {
@@ -56,8 +56,8 @@ class Client extends HttpClient implements ClientInterface
         if (! isset($headers['content-length'])) {
             $headers['content-length'] = strlen($contents);
         }
-        $this->sendRaw($method, $path, $headers, $contents, $version);
-        $result = $this->recvRaw();
+        $this->sendPackedRequestAsync($method, $path, $headers, $contents, $version);
+        $result = $this->recvResponseEntity();
         return new RawResponse(
             $result->statusCode,
             $result->headers,

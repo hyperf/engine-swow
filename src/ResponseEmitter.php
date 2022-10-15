@@ -13,28 +13,33 @@ namespace Hyperf\Engine;
 
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
-use Swow\Http\Server\Connection;
-
-use function Swow\Http\packResponse;
+use Swow\Psr7\Message\ResponsePlusInterface;
+use Swow\Psr7\Server\ServerConnection;
 
 class ResponseEmitter extends Emitter
 {
     /**
-     * @param Connection $connection
+     * @param ResponseInterface|ResponsePlusInterface $response
+     * @param ServerConnection $connection
      */
     public function emit(ResponseInterface $response, mixed $connection, bool $withContent = true): void
     {
         $headers = $response->getHeaders();
-        $body = $response->getBody()->getContents();
-        if ($connection->getKeepAlive() !== null) {
-            $headers['Connection'] = $connection->getKeepAlive() ? 'Keep-Alive' : 'Closed';
+        $body = (string) $response->getBody();
+        if ($connection->shouldKeepAlive() !== null) {
+            $headers['Connection'] = $connection->shouldKeepAlive() ? 'Keep-Alive' : 'Closed';
         }
         if (! $response->hasHeader('Content-Length')) {
             $headers['Content-Length'] = strlen($body);
         }
-        $connection->write([
-            packResponse($response->getStatusCode(), $headers),
-            $body,
-        ]);
+
+        if ($response instanceof ResponsePlusInterface) {
+            $response->setHeaders($headers);
+        } else {
+            $response = $response->withAddedHeader('Connection', $headers['Connection'])
+                ->withAddedHeader('Content-Length', $headers['Content-Length']);
+        }
+
+        $connection->sendHttpResponse($response);
     }
 }

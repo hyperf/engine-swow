@@ -14,15 +14,15 @@ use Hyperf\Engine\Http\Server;
 use Hyperf\Engine\ResponseEmitter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
-use Swow\Http\Buffer;
-use Swow\Http\Response;
-use Swow\Http\Server\Connection;
+use Swow\Psr7\Message\BufferStream;
+use Swow\Psr7\Message\Response;
+use Swow\Psr7\Server\ServerConnection;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-function to_buffer(string $body): Buffer
+function to_buffer(string $body): BufferStream
 {
-    return Buffer::for($body)->rewind();
+    return new BufferStream($body);
 }
 
 function parse_query(string $query): array
@@ -43,23 +43,27 @@ $logger->shouldReceive('error')->withAnyArgs()->andReturnUsing(static function (
 $emitter = new ResponseEmitter();
 $server = new Server($logger);
 
-$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, Connection $session) use ($emitter) {
+$server->bind('0.0.0.0', 9501)->handle(function (RequestInterface $request, ServerConnection $session) use ($emitter) {
     switch ($request->getUri()->getPath()) {
         case '/':
-            $response = new Response(200, [
-                'Server' => 'Hyperf',
-            ], to_buffer('Hello World.'));
+            $response = new Response();
+            $response->setStatus(200);
+            $response->setHeaders(['Server' => 'Hyperf']);
+            $response->setBody(to_buffer('Hello World.'));
             $emitter->emit($response, $session);
             break;
         case '/cookies':
             $id = uniqid();
-            $response = new Response(200, [
-                'Server' => ['Hyperf'],
+            $response = new Response();
+            $response->setStatus(200);
+            $response->setHeaders([
+                'Server' => 'Hyperf',
                 'Set-Cookie' => [
                     'X-Server-Id=' . $id,
                     'X-Server-Name=Hyperf',
                 ],
-            ], to_buffer($id));
+            ]);
+            $response->setBody(to_buffer($id));
             $emitter->emit($response, $session);
             break;
         case '/timeout':
@@ -79,16 +83,16 @@ Connection: close
         case '/coroutine_id':
             Coroutine::create(function () use ($emitter, $session) {
                 $id = Coroutine::id();
-                $response = new Response(200, [
-                    'Server' => 'Hyperf',
-                ], to_buffer((string) $id));
+                $response = new Response();
+                $response->setHeaders(['Server' => 'Hyperf']);
+                $response->setBody((string) $id);
                 $emitter->emit($response, $session);
             });
             break;
         default:
-            $response = new Response(404, [
-                'Server' => 'Hyperf',
-            ]);
+            $response = new Response();
+            $response->setStatus(404);
+            $response->setHeaders(['Server' => 'Hyperf']);
             $emitter->emit($response, $session);
             break;
     }

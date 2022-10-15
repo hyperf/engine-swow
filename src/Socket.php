@@ -19,9 +19,9 @@ class Socket extends Swow\Socket implements SocketInterface
     public function sendAll(string $data, float $timeout = 0): int|false
     {
         if ($timeout > 0) {
-            $this->sendString($data, intval($timeout * 1000));
+            $this->send($data, timeout: intval($timeout * 1000));
         } else {
-            $this->sendString($data);
+            $this->send($data);
         }
         return strlen($data);
     }

@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\Engine\WebSocket\Opcode;
-use Swow\Http\Client as HttpClient;
-use Swow\Http\Request;
-use Swow\Http\WebSocketFrame;
+use Swow\Psr7\Client\Client as HttpClient;
+use Swow\Psr7\Message\Request;
+use Swow\Psr7\Message\WebSocketFrame;
 
 /**
  * @internal

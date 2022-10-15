@@ -12,18 +12,21 @@ declare(strict_types=1);
 use Hyperf\Engine\Http\Server;
 use Hyperf\Engine\ResponseEmitter;
 use Hyperf\Engine\WebSocket\WebSocket;
-use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerInterface;
-use Swow\Http\Buffer;
-use Swow\Http\Response;
-use Swow\Http\Server\Connection;
-use Swow\WebSocket\Frame;
+use Swow\Buffer;
+use Swow\Psr7\Message\RequestPlusInterface;
+use Swow\Psr7\Message\Response;
+use Swow\Psr7\Message\WebSocketFrame as Frame;
+use Swow\Psr7\Psr7;
+use Swow\Psr7\Server\ServerConnection;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 function to_buffer(string $body): Buffer
 {
-    return Buffer::for($body)->rewind();
+    $buffer = new Buffer(0);
+    $buffer->write(0, $body);
+    return $buffer;
 }
 
 function parse_query(string $query): array
@@ -44,18 +47,21 @@ $logger->shouldReceive('error')->withAnyArgs()->andReturnUsing(static function (
 $emitter = new ResponseEmitter();
 $server = new Server($logger);
 
-$server->bind('0.0.0.0', 9503)->handle(function (RequestInterface $request, Connection $connection) use ($emitter) {
+$server->bind('0.0.0.0', 9503)->handle(function (RequestPlusInterface $request, ServerConnection $connection) use ($emitter) {
     switch ($request->getUri()->getPath()) {
         case '/':
             $socket = new WebSocket($connection, $request);
-            $socket->on(WebSocket::ON_CLOSE, static function (Connection $connection, int $fd) {
+            $socket->on(WebSocket::ON_CLOSE, static function (ServerConnection $connection, int $fd) {
                 var_dump('closed: ' . $fd);
                 $connection->close();
             });
-            $socket->on(WebSocket::ON_MESSAGE, static function (Connection $connection, Frame $frame) {
+            $socket->on(WebSocket::ON_MESSAGE, static function (ServerConnection $connection, Frame $frame) {
                 $received = (string) $frame->getPayloadData();
-                $frame->getPayloadData()->rewind()->write("received: {$received}");
-                $connection->sendWebSocketFrame($frame);
+                $connection->sendWebSocketFrame(
+                    Psr7::createWebSocketTextFrame(
+                        payloadData: "received: {$received}"
+                    )
+                );
             });
             $socket->start();
             break;
