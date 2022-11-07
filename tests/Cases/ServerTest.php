@@ -30,7 +30,7 @@ class ServerTest extends AbstractTestCase
         $socket->connect('127.0.0.1', 9501);
         $socket->write([Http::packRequest('GET', '/')]);
         $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
-        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\nConnection: keep-alive\r\n\r\nHello World.", (string) $buffer);
+        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nConnection: Keep-Alive\r\nContent-Length: 12\r\n\r\nHello World.", (string) $buffer);
     }
 
     /**
