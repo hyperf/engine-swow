@@ -15,7 +15,7 @@ use Hyperf\Engine\Coroutine;
 use Psr\Log\LoggerInterface;
 use Swow\CoroutineException;
 use Swow\Errno;
-use Swow\Http\Message\HttpException;
+use Swow\Http\Protocol\ProtocolException as HttpProtocolException;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\Server as HttpServer;
 use Swow\Socket;
@@ -68,7 +68,7 @@ class Server extends HttpServer
                                     $request = $connection->recvHttpRequest();
                                     $handler = $this->handler;
                                     $handler($request, $connection);
-                                } catch (HttpException $exception) {
+                                } catch (HttpProtocolException $exception) {
                                     $connection->error($exception->getCode(), $exception->getMessage());
                                 }
                                 if (! $request || ! Psr7::detectShouldKeepAlive($request)) {
