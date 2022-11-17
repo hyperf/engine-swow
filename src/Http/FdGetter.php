@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine\Http;
 
-use Swow\Http\Server\Connection;
+use Swow\Psr7\Server\ServerConnection as Connection;
 
 class FdGetter
 {

@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine\WebSocket;
 
-class Frame extends \Swow\WebSocket\Frame
+use Swow\Psr7\Message\WebSocketFrame;
+
+class Frame extends WebSocketFrame
 {
 }

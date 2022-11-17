@@ -13,12 +13,13 @@ namespace Hyperf\Engine\WebSocket;
 
 use Hyperf\Engine\Contract\WebSocket\WebSocketInterface;
 use Hyperf\HttpMessage\Exception\BadRequestHttpException;
-use Swow\Http\Message\HttpException;
+use Swow\Http\Protocol\ProtocolException as HttpProtocolException;
 use Swow\Http\Status;
 use Swow\Psr7\Message\RequestPlusInterface;
 use Swow\Psr7\Message\UpgradeType;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
+use Swow\WebSocket\Opcode;
 use Swow\WebSocket\WebSocket as SwowWebSocket;
 
 class WebSocket implements WebSocketInterface
@@ -77,6 +78,6 @@ class WebSocket implements WebSocketInterface
         if (class_exists(BadRequestHttpException::class)) {
             throw new BadRequestHttpException('Unsupported Upgrade Type');
         }
-        throw new HttpException(Status::BAD_REQUEST, 'Unsupported Upgrade Type');
+        throw new HttpProtocolException(Status::BAD_REQUEST, 'Unsupported Upgrade Type');
     }
 }
