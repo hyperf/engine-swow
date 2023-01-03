@@ -13,6 +13,7 @@ namespace HyperfTest\Cases;
 
 use Hyperf\Engine\Listener\WatchDogListener;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Swow\WatchDog;
 
 /**
@@ -38,7 +39,7 @@ class WatchDogTest extends TestCase
     public function testWatchDogIsRunning()
     {
         $this->assertFalse(WatchDog::isRunning());
-        (new WatchDogListener())->process(new \stdClass());
+        (new WatchDogListener())->process(new stdClass());
         $this->assertTrue(WatchDog::isRunning());
     }
 }

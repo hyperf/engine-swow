@@ -20,6 +20,7 @@ use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\Server as HttpServer;
 use Swow\Socket;
 use Swow\SocketException;
+use Throwable;
 
 use function Swow\Sync\waitAll;
 
@@ -75,7 +76,7 @@ class Server extends HttpServer
                                     break;
                                 }
                             }
-                        } catch (\Throwable $exception) {
+                        } catch (Throwable $exception) {
                             // $this->logger->error((string) $exception);
                         } finally {
                             $connection->close();
@@ -89,7 +90,7 @@ class Server extends HttpServer
                         $this->logger->error((string) $exception);
                         break;
                     }
-                } catch (\Throwable $exception) {
+                } catch (Throwable $exception) {
                     $this->logger->error((string) $exception);
                 }
             }
