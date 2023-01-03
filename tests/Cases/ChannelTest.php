@@ -47,9 +47,10 @@ class ChannelTest extends AbstractTestCase
         $channel = new Channel(10);
         $channel->push(111);
         $channel->close();
-        $this->assertTrue($channel->isEmpty());
+        $this->assertFalse($channel->isEmpty());
         $channel->push(123);
         $this->assertTrue($channel->isClosing());
+        $this->assertSame(111, $channel->pop());
         $this->assertSame(false, $channel->pop());
     }
 
