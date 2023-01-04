@@ -21,7 +21,7 @@
         }
     },
     "replace": {
-        "hyperf/engine": "^2.0"
+        "hyperf/engine": "self.version"
     },
     "require": {
         "php": ">=8.0",
