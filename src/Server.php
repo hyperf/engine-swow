@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Engine;
 
 use Psr\Log\LoggerInterface;
+use Swow\Buffer;
 use Swow\Socket;
 
 class Server extends Socket
@@ -46,9 +47,19 @@ class Server extends Socket
 
     public function start()
     {
-        $this->listen();
-        while (true) {
-            Coroutine::create($this->handler, $this->accept());
+        switch ($this->type) {
+            case Socket::TYPE_TCP:
+                $this->listen();
+                while (true) {
+                    Coroutine::create($this->handler, $this->accept());
+                }
+                break;
+            case Socket::TYPE_UDP:
+                while (true) {
+                    $data = $this->recvStringFrom(Buffer::COMMON_SIZE, $clinetinfo['address'], $clinetinfo['port']);
+                    Coroutine::create($this->handler, $this, $data, $clinetinfo);
+                }
+                break;
         }
     }
 }
