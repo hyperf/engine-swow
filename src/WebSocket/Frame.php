@@ -23,7 +23,7 @@ class Frame extends WebSocketFrame implements FrameInterface
             throw new InvalidArgumentException('The frame is invalid.');
         }
 
-        return new static(
+        return new Frame(
             $frame->getFin(),
             $frame->getRSV1(),
             $frame->getRSV2(),
