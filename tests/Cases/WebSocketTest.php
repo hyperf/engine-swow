@@ -13,10 +13,13 @@ namespace HyperfTest\Cases;
 
 use Hyperf\Engine\WebSocket\Frame;
 use Hyperf\Engine\WebSocket\Opcode;
+use Hyperf\Engine\WebSocket\Response;
+use Mockery;
 use Swow\Psr7\Client\Client as HttpClient;
 use Swow\Psr7\Message\Request;
 use Swow\Psr7\Message\WebSocketFrame;
 use Swow\Psr7\Psr7;
+use Swow\Psr7\Server\ServerConnection;
 
 /**
  * @internal
@@ -59,5 +62,14 @@ class WebSocketTest extends AbstractTestCase
 
         $frame = Frame::from($frame);
         $this->assertSame($string, (string) $frame);
+    }
+
+    public function testResponseGetFd()
+    {
+        $conn = Mockery::mock(ServerConnection::class);
+        $conn->shouldReceive('getFd')->andReturn(123);
+        $response = new Response($conn);
+
+        $this->assertSame(123, $response->getFd());
     }
 }

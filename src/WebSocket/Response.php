@@ -13,23 +13,28 @@ namespace Hyperf\Engine\WebSocket;
 
 use Hyperf\Engine\Contract\WebSocket\FrameInterface;
 use Hyperf\Engine\Contract\WebSocket\ResponseInterface;
-use Hyperf\Engine\Exception\InvalidArgumentException;
 use Swow\Psr7\Server\ServerConnection;
 
 class Response implements ResponseInterface
 {
-    public function __construct(protected mixed $connection)
+    public function __construct(protected ServerConnection $connection)
     {
     }
 
-    public function push(FrameInterface $frame, int $fd = 0): bool
+    public function push(FrameInterface $frame): bool
     {
-        if (! $this->connection instanceof ServerConnection) {
-            throw new InvalidArgumentException('The websocket connection is invalid.');
-        }
-
         $this->connection->sendWebSocketFrame($frame);
 
         return true;
+    }
+
+    public function init(mixed $frame): static
+    {
+        return $this;
+    }
+
+    public function getFd(): int
+    {
+        return $this->connection->getFd();
     }
 }
