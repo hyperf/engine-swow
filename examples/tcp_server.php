@@ -27,11 +27,11 @@ $server->bind('0.0.0.0', 9502)->handle(function (Socket $socket) {
             if ($ret === 0) {
                 break;
             }
-            $body = $buffer->rewind()->getContents();
+            $body = (string) $buffer;
             if ($body === 'ping') {
-                $socket->write([(new Swow\Buffer(0))->write('pong')->rewind()]);
+                $socket->send('pong');
             } else {
-                $socket->write([(new Swow\Buffer(0))->write('recv: ' . $body)->rewind()]);
+                $socket->send('recv: ' . $body);
             }
         } catch (SocketException|Throwable $exception) {
             echo (string) $exception;

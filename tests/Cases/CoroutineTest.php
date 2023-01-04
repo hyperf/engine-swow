@@ -11,10 +11,12 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use ArrayObject;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Contract\CoroutineInterface;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Engine\Exception\CoroutineDestroyedException;
+use Throwable;
 
 /**
  * @internal
@@ -45,13 +47,13 @@ class CoroutineTest extends AbstractTestCase
     {
         $coroutine = new Coroutine(function () {
         });
-        $this->assertInstanceOf(\ArrayObject::class, $coroutine->getContext());
+        $this->assertInstanceOf(ArrayObject::class, $coroutine->getContext());
         $coroutine->getContext()['name'] = 'Hyperf';
         $this->assertSame('Hyperf', $coroutine->getContext()['name']);
 
         $id = uniqid();
         $coroutine = Coroutine::create(function () use ($id) {
-            $this->assertInstanceOf(\ArrayObject::class, Coroutine::getContextFor());
+            $this->assertInstanceOf(ArrayObject::class, Coroutine::getContextFor());
             $this->assertFalse(isset(Coroutine::getContextFor()['name']));
             $this->assertSame(null, Coroutine::getContextFor()['name'] ?? null);
             Coroutine::getContextFor()['name'] = $id;
@@ -64,7 +66,7 @@ class CoroutineTest extends AbstractTestCase
         usleep(1000);
         $this->assertNull(Coroutine::getContextFor($coroutine->getId()));
 
-        $this->assertInstanceOf(\ArrayObject::class, Coroutine::getContextFor());
+        $this->assertInstanceOf(ArrayObject::class, Coroutine::getContextFor());
     }
 
     public function testCoroutineId()
@@ -98,7 +100,7 @@ class CoroutineTest extends AbstractTestCase
         try {
             Coroutine::pid($co->getId());
             $this->assertTrue(false);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->assertInstanceOf(CoroutineDestroyedException::class, $exception);
         }
     }

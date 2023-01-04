@@ -9,14 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace Hyperf\Engine\Http;
+namespace Hyperf\Engine\Exception;
 
-use Swow\Psr7\Server\ServerConnection as Connection;
-
-class FdGetter
+class InvalidArgumentException extends \InvalidArgumentException
 {
-    public function get(Connection $response): int
-    {
-        return $response->getFd();
-    }
 }

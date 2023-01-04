@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Swow\Buffer;
+use Swow\Http\Http;
 use Swow\Socket;
-
-use function Swow\Http\packRequest;
 
 /**
  * @internal
@@ -29,10 +28,9 @@ class ServerTest extends AbstractTestCase
     {
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
-        $socket->write([packRequest('GET', '/')]);
+        $socket->write([Http::packRequest('GET', '/')]);
         $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
-        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", $buffer->rewind()->getContents());
-        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nContent-Length: 12\r\n\r\nHello World.", (string) $buffer);
+        $this->assertSame("HTTP/1.1 200 OK\r\nServer: Hyperf\r\nConnection: Keep-Alive\r\nContent-Length: 12\r\n\r\nHello World.", (string) $buffer);
     }
 
     /**
@@ -42,13 +40,13 @@ class ServerTest extends AbstractTestCase
     {
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9501);
-        $socket->write([packRequest('GET', '/coroutine_id')]);
+        $socket->write([Http::packRequest('GET', '/')]);
         $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
 
-        $socket->write([packRequest('GET', '/coroutine_id')]);
+        $socket->write([Http::packRequest('GET', '/')]);
         $socket->recv($buffer2 = new Buffer(Buffer::COMMON_SIZE));
 
-        $this->assertNotEquals((string) $buffer, (string) $buffer2);
+        $this->assertEquals((string) $buffer, (string) $buffer2);
     }
 
     /**
@@ -58,14 +56,14 @@ class ServerTest extends AbstractTestCase
     {
         $socket = new Socket(Socket::TYPE_TCP);
         $socket->connect('127.0.0.1', 9502);
-        $socket->write([(new Buffer(0))->write('ping')->rewind()]);
-        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
-        $this->assertSame('pong', $buffer->rewind()->getContents());
+        $socket->send('ping');
+        $body = $socket->recvString();
+        $this->assertSame('pong', $body);
         usleep(1000);
-        $socket->write([(new Buffer(0))->write('Hello World.')->rewind()]);
-        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
-        $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
-        $this->assertSame('recv: Hello World.', (string) $buffer);
+
+        $socket->send('Hello World.');
+        $body = $socket->recvString();
+        $this->assertSame('recv: Hello World.', $body);
     }
 
     /**

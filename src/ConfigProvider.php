@@ -11,6 +11,9 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine;
 
+use Hyperf\Engine\Contract\Socket\SocketFactoryInterface;
+use Hyperf\Engine\Socket\SocketFactory;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -18,6 +21,7 @@ class ConfigProvider
         return [
             'dependencies' => [
                 \Hyperf\HttpServer\ResponseEmitter::class => ResponseEmitter::class,
+                SocketFactoryInterface::class => SocketFactory::class,
             ],
         ];
     }

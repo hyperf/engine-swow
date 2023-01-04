@@ -11,10 +11,12 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use Hyperf\Engine\WebSocket\Frame;
 use Hyperf\Engine\WebSocket\Opcode;
-use Swow\Http\Client as HttpClient;
-use Swow\Http\Request;
-use Swow\Http\WebSocketFrame;
+use Swow\Psr7\Client\Client as HttpClient;
+use Swow\Psr7\Message\Request;
+use Swow\Psr7\Message\WebSocketFrame;
+use Swow\Psr7\Psr7;
 
 /**
  * @internal
@@ -47,5 +49,15 @@ class WebSocketTest extends AbstractTestCase
             ->recvWebSocketFrame();
 
         $this->assertSame(Opcode::PONG, $reply->getOpcode());
+    }
+
+    public function testFrameToString()
+    {
+        $frame = Psr7::createWebSocketTextFrame(payloadData: 'Hello World.');
+
+        $this->assertIsString($string = (string) $frame);
+
+        $frame = Frame::from($frame);
+        $this->assertSame($string, (string) $frame);
     }
 }

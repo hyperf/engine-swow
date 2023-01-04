@@ -15,10 +15,12 @@ use Hyperf\Engine\Coroutine;
 use Psr\Log\LoggerInterface;
 use Swow\CoroutineException;
 use Swow\Errno;
-use Swow\Http\ResponseException;
-use Swow\Http\Server as HttpServer;
+use Swow\Http\Protocol\ProtocolException as HttpProtocolException;
+use Swow\Psr7\Psr7;
+use Swow\Psr7\Server\Server as HttpServer;
 use Swow\Socket;
 use Swow\SocketException;
+use Throwable;
 
 use function Swow\Sync\waitAll;
 
@@ -67,14 +69,14 @@ class Server extends HttpServer
                                     $request = $connection->recvHttpRequest();
                                     $handler = $this->handler;
                                     $handler($request, $connection);
-                                } catch (ResponseException $exception) {
+                                } catch (HttpProtocolException $exception) {
                                     $connection->error($exception->getCode(), $exception->getMessage());
                                 }
-                                if (! $request || ! $request->getKeepAlive()) {
+                                if (! $request || ! Psr7::detectShouldKeepAlive($request)) {
                                     break;
                                 }
                             }
-                        } catch (\Throwable $exception) {
+                        } catch (Throwable $exception) {
                             // $this->logger->error((string) $exception);
                         } finally {
                             $connection->close();
@@ -88,7 +90,7 @@ class Server extends HttpServer
                         $this->logger->error((string) $exception);
                         break;
                     }
-                } catch (\Throwable $exception) {
+                } catch (Throwable $exception) {
                     $this->logger->error((string) $exception);
                 }
             }

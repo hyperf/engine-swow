@@ -14,6 +14,7 @@ namespace HyperfTest\Cases;
 use Hyperf\Engine\Http\Client;
 use Swow\Errno;
 use Swow\SocketException;
+use Throwable;
 
 /**
  * @internal
@@ -71,7 +72,7 @@ class ClientTest extends AbstractTestCase
             $client = new Client('127.0.0.1', 9601);
             $client->request('GET', '/');
             $this->assertTrue(false);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->assertInstanceOf(SocketException::class, $exception);
             $this->assertSame(Errno::ECONNREFUSED, $exception->getCode());
             $this->assertStringContainsString('Connection refused', $exception->getMessage());
@@ -88,7 +89,7 @@ class ClientTest extends AbstractTestCase
             $client->set(['timeout' => 0.1]);
             $client->request('GET', '/timeout?time=1');
             $this->assertTrue(false);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->assertInstanceOf(SocketException::class, $exception);
             $this->assertSame(Errno::ETIMEDOUT, $exception->getCode());
             $this->assertStringContainsString('Timed out', $exception->getMessage());

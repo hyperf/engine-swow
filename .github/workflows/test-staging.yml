@@ -11,6 +11,9 @@ on:
   schedule:
     - cron: '0 3 * * *'
 
+env:
+  SW_VERSION: 'develop'
+
 jobs:
   staging-unix:
     name: Test for PHP ${{ matrix.php-version }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
@@ -18,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
-        php-version: [ '8.0', '8.1' ]
+        php-version: [ '8.0', '8.1', '8.2' ]
       max-parallel: 6
       fail-fast: false
     steps:
@@ -62,7 +65,7 @@ jobs:
           sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
           php --ri swow
       - name: Setup Packages
-        run: composer install -o
+        run: composer update -oW
       - name: Run Server
         run: |
           php examples/http_server.php & disown
