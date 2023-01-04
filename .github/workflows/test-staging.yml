@@ -65,7 +65,7 @@ jobs:
           sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
           php --ri swow
       - name: Setup Packages
-        run: composer install -o
+        run: composer update -oW
       - name: Run Server
         run: |
           php examples/http_server.php & disown

@@ -21,7 +21,7 @@
         }
     },
     "replace": {
-        "hyperf/engine": "self.version"
+        "hyperf/engine": "~2.1.0"
     },
     "require": {
         "php": ">=8.0",
@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
-        "hyperf/framework": "~3.0",
+        "hyperf/framework": "^3.0",
         "hyperf/http-server": "^3.0",
         "mockery/mockery": "^1.4",
         "phpstan/phpstan": "^1.0",
