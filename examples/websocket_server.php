@@ -44,7 +44,7 @@ $logger->shouldReceive('error')->withAnyArgs()->andReturnUsing(static function (
     echo $args . PHP_EOL;
 });
 
-$emitter = new ResponseEmitter();
+$emitter = new ResponseEmitter(null);
 $server = new Server($logger);
 
 $server->bind('0.0.0.0', 9503)->handle(function (RequestPlusInterface $request, ServerConnection $connection) use ($emitter) {

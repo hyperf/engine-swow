@@ -6,7 +6,7 @@
         "php",
         "hyperf"
     ],
-    "description": "",
+    "description": "Coroutine engine provided by swow.",
     "autoload": {
         "psr-4": {
             "Hyperf\\Engine\\": "src/"
