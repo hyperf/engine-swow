@@ -67,12 +67,12 @@ class ServerTest extends AbstractTestCase
     }
 
     /**
-     * UdpServer Test
+     * @group Server
      */
     public function testUdpServer()
     {
         $socket = new Socket(Socket::TYPE_UDP);
-        $socket->connect('127.0.0.1', 9503);
+        $socket->connect('127.0.0.1', 9504);
         $socket->send('ping');
         $body = $socket->recvString();
         $this->assertSame('pong', $body);
