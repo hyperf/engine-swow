@@ -73,12 +73,12 @@ class ServerTest extends AbstractTestCase
     {
         $socket = new Socket(Socket::TYPE_UDP);
         $socket->connect('127.0.0.1', 9503);
-        $socket->write([(new Buffer())->write('ping')->rewind()]);
-        $socket->recv($buffer = new Buffer());
+        $socket->write([(new Buffer(0))->write('ping')->rewind()]);
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
         $this->assertSame('pong', $buffer->rewind()->getContents());
         usleep(1000);
-        $socket->write([(new Buffer())->write('Hello World.')->rewind()]);
-        $socket->recv($buffer = new Buffer());
+        $socket->write([(new Buffer(0))->write('Hello World.')->rewind()]);
+        $socket->recv($buffer = new Buffer(Buffer::COMMON_SIZE));
         $this->assertSame('recv: Hello World.', $buffer->rewind()->getContents());
         $this->assertSame('recv: Hello World.', (string) $buffer);
     }

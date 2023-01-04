@@ -24,7 +24,7 @@ $server = new Server($logger, Socket::TYPE_UDP);
 $server->bind('0.0.0.0',9503)->handle(function (Socket $socket, $data, $clientInfo) {
         try {
             if($data === "ping"){
-                $buffer = new Buffer();
+                $buffer = new Buffer(Buffer::COMMON_SIZE);
                 $buffer->write("pong")->rewind();
                 $socket->sendTo($buffer->write("pong")->rewind(), $buffer->getLength(),
                     $clientInfo['address'], $clientInfo['port']);
