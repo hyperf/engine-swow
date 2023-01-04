@@ -24,22 +24,28 @@ class ResponseEmitter extends Emitter
      */
     public function emit(ResponseInterface $response, mixed $connection, bool $withContent = true): void
     {
-        $headers = $response->getHeaders();
-        $body = (string) $response->getBody();
-        if ($connection->shouldKeepAlive() !== null) {
-            $headers['Connection'] = $connection->shouldKeepAlive() ? 'Keep-Alive' : 'Closed';
-        }
-        if (! $response->hasHeader('Content-Length')) {
-            $headers['Content-Length'] = strlen($body);
-        }
+        try {
+            if ($connection->getProtocolType() === ServerConnection::PROTOCOL_TYPE_WEBSOCKET) {
+                return;
+            }
+            $headers = $response->getHeaders();
+            $body = (string) $response->getBody();
+            if ($connection->shouldKeepAlive() !== null) {
+                $headers['Connection'] = $connection->shouldKeepAlive() ? 'Keep-Alive' : 'Closed';
+            }
+            if (! $response->hasHeader('Content-Length')) {
+                $headers['Content-Length'] = strlen($body);
+            }
 
-        if ($response instanceof ResponsePlusInterface) {
-            $response->setHeaders($headers);
-        } else {
-            $response = $response->withAddedHeader('Connection', $headers['Connection'])
-                ->withAddedHeader('Content-Length', $headers['Content-Length']);
-        }
+            if ($response instanceof ResponsePlusInterface) {
+                $response->setHeaders($headers);
+            } else {
+                $response = $response->withAddedHeader('Connection', $headers['Connection'])
+                    ->withAddedHeader('Content-Length', $headers['Content-Length']);
+            }
 
-        $connection->sendHttpResponse($response);
+            $connection->sendHttpResponse($response);
+        } catch (\Throwable) {
+        }
     }
 }
