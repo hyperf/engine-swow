@@ -9,11 +9,8 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace Hyperf\Engine\WebSocket;
+namespace Hyperf\Engine\Exception;
 
-use Hyperf\Engine\Contract\WebSocket\FrameInterface;
-use Swow\Psr7\Message\WebSocketFrame;
-
-class Frame extends WebSocketFrame implements FrameInterface
+class InvalidArgumentException extends \InvalidArgumentException
 {
 }
