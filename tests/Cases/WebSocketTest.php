@@ -15,6 +15,7 @@ use Hyperf\Engine\WebSocket\Opcode;
 use Swow\Psr7\Client\Client as HttpClient;
 use Swow\Psr7\Message\Request;
 use Swow\Psr7\Message\WebSocketFrame;
+use Swow\Psr7\Psr7;
 
 /**
  * @internal
@@ -47,5 +48,12 @@ class WebSocketTest extends AbstractTestCase
             ->recvWebSocketFrame();
 
         $this->assertSame(Opcode::PONG, $reply->getOpcode());
+    }
+
+    public function testFrameToString()
+    {
+        $frame = Psr7::createWebSocketTextFrame(payloadData: "Hello World.");
+
+        $this->assertIsString((string) $frame);
     }
 }
