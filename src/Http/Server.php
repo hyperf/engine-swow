@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Engine\Http;
 
+use Hyperf\Engine\Contract\Http\ServerInterface;
 use Hyperf\Engine\Coroutine;
 use Psr\Log\LoggerInterface;
 use Swow\CoroutineException;
@@ -24,7 +25,7 @@ use Throwable;
 
 use function Swow\Sync\waitAll;
 
-class Server extends HttpServer
+class Server extends HttpServer implements ServerInterface
 {
     public ?string $host = null;
 
@@ -48,13 +49,13 @@ class Server extends HttpServer
         return $this;
     }
 
-    public function handle(callable $callable)
+    public function handle(callable $callable): static
     {
         $this->handler = $callable;
         return $this;
     }
 
-    public function start()
+    public function start(): void
     {
         $this->listen();
         Coroutine::create(function () {
