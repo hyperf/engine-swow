@@ -13,13 +13,14 @@ namespace Hyperf\Engine;
 
 use Exception;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Engine\Contract\ResponseEmitterInterface;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
 
-class ResponseEmitter extends Emitter
+class ResponseEmitter extends Emitter implements ResponseEmitterInterface
 {
     public function __construct(protected ?StdoutLoggerInterface $logger)
     {
