@@ -21,7 +21,7 @@
         }
     },
     "replace": {
-        "hyperf/engine": "~2.1.0"
+        "hyperf/engine": "~2.2.0"
     },
     "require": {
         "php": ">=8.0",
@@ -50,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "2.2-dev"
         },
         "hyperf": {
             "config": "Hyperf\\Engine\\ConfigProvider"
