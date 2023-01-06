@@ -67,6 +67,7 @@ jobs:
           php examples/tcp_server.php & disown
           php examples/websocket_server.php & disown
           php examples/udp_server.php & disown
+          php examples/http_server_v2.php & disown
       - name: Run Test Cases
         run: |
           echo "::group::Start testing"
@@ -172,6 +173,7 @@ jobs:
           Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/tcp_server.php" -PassThru
           Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/websocket_server.php" -PassThru
           Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/udp_server.php" -PassThru
+          Start-Process "php-win.exe" -ArgumentList "-dextension=swow examples/http_server_v2.php" -PassThru
       - name: Run Test Cases
         shell: powershell
         run: |

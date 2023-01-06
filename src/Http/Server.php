@@ -78,7 +78,7 @@ class Server extends HttpServer implements ServerInterface
                                 }
                             }
                         } catch (Throwable $exception) {
-                            // $this->logger->error((string) $exception);
+                            // $this->logger->critical((string) $exception);
                         } finally {
                             $connection->close();
                         }

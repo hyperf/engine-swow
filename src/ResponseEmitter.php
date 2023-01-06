@@ -37,7 +37,18 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                 return;
             }
 
-            Psr7::setHeaders($response, $response->getStandardHeaders());
+            $headers = $response->getHeaders();
+            if ($response instanceof ResponsePlusInterface) {
+                $headers = $response->getStandardHeaders();
+            } else {
+                $headers['Connection'] = $connection->shouldKeepAlive() ? 'keep-alive' : 'closed';
+                if (! $response->hasHeader('Content-Length')) {
+                    $body = (string) $response->getBody();
+                    $headers['Content-Length'] = strlen($body);
+                }
+            }
+
+            $response = Psr7::setHeaders($response, $headers);
 
             $connection->sendHttpResponse($response);
         } catch (Exception $exception) {
