@@ -131,4 +131,14 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
         return parent::get($id)->resume(...$data);
     }
+
+    /**
+     * Get the coroutine stats.
+     */
+    public static function stats(): array
+    {
+        return [
+            'coroutine_num' => static::count(),
+        ];
+    }
 }
