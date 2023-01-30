@@ -7,7 +7,7 @@ on:
     - cron: '0 3 * * *'
 
 env:
-  SWOW_RELEASE: "v1.0.0"
+  SWOW_RELEASE: "v1.1.0"
 
 jobs:
   release-unix:
