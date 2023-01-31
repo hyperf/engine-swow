@@ -7,7 +7,6 @@ on:
     - cron: '0 3 * * *'
 
 env:
-  SWOW_RELEASE: "v1.1.0"
   SKIP_SWOW_REQUIRED_EXTENSION_CHECK: 1
 
 jobs:
