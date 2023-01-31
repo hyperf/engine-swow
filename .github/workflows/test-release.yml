@@ -11,7 +11,7 @@ env:
 
 jobs:
   release-unix:
-    name: Test for PHP ${{ matrix.php-version }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
