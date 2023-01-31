@@ -74,7 +74,7 @@ jobs:
           echo "::group::Start testing"
           composer test
   release-win:
-    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} with ${{ matrix.swow-version }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
