@@ -61,7 +61,9 @@ jobs:
           sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
           php --ri swow
       - name: Setup Packages
-        run: composer update -oW
+        run: |
+          export SKIP_SWOW_REQUIRED_EXTENSION_CHECK=1
+          composer update -oW
       - name: Run Server
         run: |
           php examples/http_server.php & disown
@@ -163,7 +165,9 @@ jobs:
           fix-pickle: 1
       # we donot enable swow by default in ^
       - name: Setup Packages
-        run: composer install -o
+        run: |
+          export SKIP_SWOW_REQUIRED_EXTENSION_CHECK=1
+          composer install -o
       - name: Run Server
         shell: powershell
         run: |
