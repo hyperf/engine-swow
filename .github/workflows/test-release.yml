@@ -8,6 +8,7 @@ on:
 
 env:
   SWOW_RELEASE: "v1.1.0"
+  SKIP_SWOW_REQUIRED_EXTENSION_CHECK: 1
 
 jobs:
   release-unix:
@@ -62,7 +63,6 @@ jobs:
           php --ri swow
       - name: Setup Packages
         run: |
-          export SKIP_SWOW_REQUIRED_EXTENSION_CHECK=1
           composer update -oW
       - name: Run Server
         run: |
@@ -166,7 +166,6 @@ jobs:
       # we donot enable swow by default in ^
       - name: Setup Packages
         run: |
-          export SKIP_SWOW_REQUIRED_EXTENSION_CHECK=1
           composer install -o
       - name: Run Server
         shell: powershell
