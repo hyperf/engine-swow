@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '0 3 * * *'
 
+env:
+  SWOW_RELEASE: "v1.1.0"
+
 jobs:
   release-unix:
     name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
@@ -14,7 +17,7 @@ jobs:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.1.0']
+        swow-version: ['v1.1.0', 'v1.0.0']
       max-parallel: 32
       fail-fast: false
     steps:
@@ -77,7 +80,7 @@ jobs:
       matrix:
         os: [ 'windows-2019' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.1.0']
+        swow-version: ['v1.1.0', 'v1.0.0']
         ts: [ 'nts', 'ts' ]
       max-parallel: 32
       fail-fast: false
