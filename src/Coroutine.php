@@ -72,6 +72,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return $coroutine;
     }
 
+    public static function cancel(int $id):void
+    {
+        static::get($id)?->kill();
+    }
+
     public static function id(): int
     {
         return static::getCurrent()->getId();
