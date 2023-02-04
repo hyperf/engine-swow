@@ -61,7 +61,9 @@ class Channel implements ChannelInterface
 
     public function close(): bool
     {
-        $this->channel->close();
+        if ($this->channel->isAvailable()) {
+            $this->channel->close();
+        }
         return true;
     }
 

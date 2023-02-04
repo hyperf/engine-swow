@@ -87,6 +87,17 @@ class ChannelTest extends AbstractTestCase
         $this->assertTrue($channel->isClosing());
     }
 
+    public function testChannelCloseAgain()
+    {
+        /** @var ChannelInterface $channel */
+        $channel = new Channel(1);
+        $channel->close();
+        $channel->close();
+
+        $this->assertTrue($channel->isClosing());
+        $this->assertFalse($channel->isAvailable());
+    }
+
     public function testChannelIsAvailable()
     {
         /** @var ChannelInterface $channel */
