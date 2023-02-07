@@ -12,7 +12,6 @@ declare(strict_types=1);
 ! defined('SWOOLE_HOOK_ALL') && define('SWOOLE_HOOK_ALL', 0);
 ! defined('SWOOLE_BASE') && define('SWOOLE_BASE', 0);
 
-
 if (class_exists(\Swow\Signal::class)){
   ! defined('SIGHUP') && define('SIGHUP',\Swow\Signal::HUP);
   ! defined('SIGINT') && define('SIGINT',\Swow\Signal::INT);
