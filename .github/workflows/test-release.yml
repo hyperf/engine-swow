@@ -7,17 +7,18 @@ on:
     - cron: '0 3 * * *'
 
 env:
-  SWOW_RELEASE: "v1.1.0"
+  SKIP_SWOW_REQUIRED_EXTENSION_CHECK: 1
 
 jobs:
   release-unix:
-    name: Test for PHP ${{ matrix.php-version }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-      max-parallel: 6
+        swow-version: ['v1.1.0', 'v1.0.0']
+      max-parallel: 32
       fail-fast: false
     steps:
       - name: Checkout self
@@ -33,7 +34,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ env.SWOW_RELEASE }}
+          ref: ${{ matrix.swow-version }}
           path: swow
       - name: Build Swow
         run: |
@@ -60,7 +61,9 @@ jobs:
           sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
           php --ri swow
       - name: Setup Packages
-        run: composer update -oW
+        run: |
+          composer update -oW
+          composer require swow/swow:${{ matrix.swow-version}}
       - name: Run Server
         run: |
           php examples/http_server.php & disown
@@ -73,14 +76,15 @@ jobs:
           echo "::group::Start testing"
           composer test
   release-win:
-    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} on ${{ matrix.os }}
+    name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: [ 'windows-2019' ]
-        php-version: [ '8.0', '8.1' ]
+        php-version: [ '8.0', '8.1', '8.2' ]
+        swow-version: ['v1.1.0', 'v1.0.0']
         ts: [ 'nts', 'ts' ]
-      max-parallel: 6
+      max-parallel: 32
       fail-fast: false
     env:
       tools_path: C:\tools\phpdev
@@ -99,7 +103,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: swow/swow
-          ref: ${{ env.SWOW_RELEASE }}
+          ref: ${{ matrix.swow-version }}
           path: swow
       - name: Prepare caches
         id: cacheprepare
@@ -161,7 +165,9 @@ jobs:
           fix-pickle: 1
       # we donot enable swow by default in ^
       - name: Setup Packages
-        run: composer install -o
+        run: |
+          composer install -o
+          composer require swow/swow:${{ matrix.swow-version}}
       - name: Run Server
         shell: powershell
         run: |
