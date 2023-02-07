@@ -84,9 +84,12 @@ class Server extends HttpServer implements ServerInterface
                         }
                     });
                 } catch (SocketException|CoroutineException $exception) {
-                    if (in_array($exception->getCode(), [Errno::EMFILE, Errno::ENFILE, Errno::ENOMEM, Errno::ECANCELED], true)) {
+                    if (in_array($exception->getCode(), [Errno::EMFILE, Errno::ENFILE, Errno::ENOMEM], true)) {
                         $this->logger->warning('Socket resources have been exhausted.');
                         sleep(1);
+                    } elseif (in_array($exception->getCode(), [Errno::ECANCELED])) {
+                        $this->logger->notice('Socket accept has been canceled');
+                        break;
                     } else {
                         $this->logger->error((string) $exception);
                         break;
