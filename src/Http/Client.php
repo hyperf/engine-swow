@@ -20,9 +20,6 @@ class Client extends HttpClient implements ClientInterface
 
     protected int $port;
 
-    /**
-     * TODO: Swow not support ssl.
-     */
     private bool $ssl;
 
     public function __construct(string $name, int $port, bool $ssl = false)
@@ -50,6 +47,9 @@ class Client extends HttpClient implements ClientInterface
     {
         if (! $this->isEstablished()) {
             $this->connect($this->host, $this->port);
+            if ($this->ssl) {
+                $this->enableCrypto();
+            }
         }
 
         $headers = array_change_key_case($headers, CASE_LOWER);
