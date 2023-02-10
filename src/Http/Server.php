@@ -87,6 +87,9 @@ class Server extends HttpServer implements ServerInterface
                     if (in_array($exception->getCode(), [Errno::EMFILE, Errno::ENFILE, Errno::ENOMEM], true)) {
                         $this->logger->warning('Socket resources have been exhausted.');
                         sleep(1);
+                    } elseif ($exception->getCode() === Errno::ECANCELED) {
+                        $this->logger->info('Socket accept has been canceled.');
+                        break;
                     } else {
                         $this->logger->error((string) $exception);
                         break;
