@@ -7,7 +7,7 @@ use Hyperf\Engine\Contract\Http\Chunkable;
 
 use Swow\Psr7\Server\ServerConnection;
 
-class Connection implements ConnectionInterface, Chunkable
+class Connection implements ConnectionInterface
 {
     public function __construct(protected ServerConnection $response)
     {
