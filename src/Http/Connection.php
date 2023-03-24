@@ -32,7 +32,6 @@ class Connection implements ConnectionInterface
 
     public function end(): void
     {
-        $this->response->write(["0\r\n"]);
-        $this->response->write(["\r\n"]);
+        $this->response->write(["0\r\n", "\r\n"]);
     }
 }
