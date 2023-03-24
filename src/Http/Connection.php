@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf.
+ *
+ * @link     https://www.hyperf.io
+ * @document https://hyperf.wiki
+ * @contact  group@hyperf.io
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\Engine\Http;
 
 use Hyperf\Engine\Contract\Http\ConnectionInterface;
-use Hyperf\Engine\Contract\Http\Chunkable;
-
 use Swow\Psr7\Server\ServerConnection;
 
 class Connection implements ConnectionInterface
@@ -15,22 +22,22 @@ class Connection implements ConnectionInterface
 
     public function write(string $data): bool
     {
-         $this->response->write([
-            sprintf("%s\r\n%s\r\n", strlen($data), $data)
+        $this->response->write([
+            sprintf("%s\r\n%s\r\n", strlen($data), $data),
         ]);
 
         return true;
     }
 
     /**
-     * @return ServerConnection 
+     * @return ServerConnection
      */
     public function getSocket(): mixed
     {
         return $this->response;
     }
 
-    public function end(): void
+    public function end(?string $content = null): bool
     {
         $this->response->write(["0\r\n", "\r\n"]);
     }
