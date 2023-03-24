@@ -32,6 +32,7 @@ class Connection implements ConnectionInterface, Chunkable
 
     public function end(): void
     {
-        $this->response->write(["0\r\n\r\n"]);
+        $this->response->write(["0\r\n"]);
+        $this->response->write(["\r\n"]);
     }
 }
