@@ -19,11 +19,8 @@ class EventStream
 {
     protected bool $isTransfer = false;
 
-    protected Writable $connection;
-
-    public function __construce(Writable $connection)
+    public function __construct(protected Writable $connection)
     {
-        $this->connection = $connection;
     }
 
     public function createStream(): self
