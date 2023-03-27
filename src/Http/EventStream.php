@@ -27,6 +27,7 @@ class EventStream
                 headers: [
                     'Content-Type' => 'text/event-stream; charset=utf-8',
                     'Transfer-Encoding' => 'chunked',
+                    'Cache-Control' => 'no-cache',
                 ],
                 protocolVersion: '1.1'
             ),
