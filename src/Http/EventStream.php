@@ -17,30 +17,20 @@ use Swow\Psr7\Server\ServerConnection;
 
 class EventStream
 {
-    protected bool $isTransfer = false;
-
     public function __construct(protected Writable $connection)
     {
-    }
-
-    public function createStream(): self
-    {
-        if (! $this->isTransfer) {
-            /** @var ServerConnection $socket */
-            $socket = $this->connection->getSocket();
-            $socket->write([
-                Http::packResponse(
-                    statusCode: 200,
-                    headers: [
-                        'Content-Type' => 'text/event-stream; charset=utf-8',
-                        'Transfer-Encoding' => 'chunked',
-                    ],
-                    protocolVersion: '1.1'
-                ),
-            ]);
-        }
-        $this->isTransfer = true;
-        return $this;
+        /** @var ServerConnection $socket */
+        $socket = $this->connection->getSocket();
+        $socket->write([
+            Http::packResponse(
+                statusCode: 200,
+                headers: [
+                    'Content-Type' => 'text/event-stream; charset=utf-8',
+                    'Transfer-Encoding' => 'chunked',
+                ],
+                protocolVersion: '1.1'
+            ),
+        ]);
     }
 
     public function write(string $data): self
