@@ -23,7 +23,7 @@ class WritableConnection implements Writable
     public function write(string $data): bool
     {
         $this->response->write([
-            sprintf("%s\r\n%s\r\n", strlen($data), $data),
+            sprintf("%s\r\n%s\r\n", dechex(strlen($data)), $data),
         ]);
 
         return true;
