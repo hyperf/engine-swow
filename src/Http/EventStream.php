@@ -27,7 +27,6 @@ class EventStream
     {
         if (! $this->isTransfer) {
             /** @var ServerConnection $socket */
-
             $socket = $this->connection->getSocket();
             $socket->write([
                 Http::packResponse(
