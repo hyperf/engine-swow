@@ -26,7 +26,7 @@ class EventStream
             'Cache-Control' => 'no-cache',
         ];
         foreach ($response?->getHeaders() as $name => $values) {
-            $headers[$name] = implode(", ", $values);
+            $headers[$name] = implode(', ', $values);
         }
 
         /** @var ServerConnection $socket */
