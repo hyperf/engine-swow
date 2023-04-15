@@ -25,7 +25,7 @@ class EventStream
             'Transfer-Encoding' => 'chunked',
             'Cache-Control' => 'no-cache',
         ];
-        foreach ($response?->getHeaders() as $name => $values) {
+        foreach ($response?->getHeaders() ?? [] as $name => $values) {
             $headers[$name] = implode(', ', $values);
         }
 
