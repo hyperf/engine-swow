@@ -105,9 +105,10 @@ class Server extends HttpServer implements ServerInterface
 
         // Close coroutines that are accepting connections when server stop.
         // Don't worry about the unfinished application request. It's running in a new coroutine.
-        foreach ($connectionCoroutineMap as $connectionCoroutine) {
+        foreach ($connectionCoroutineMap as $connectionId => $connectionCoroutine) {
             if ($connectionCoroutine->isAvailable()) {
                 $connectionCoroutine->kill();
+                unset($connectionCoroutineMap[$connectionId]);
             }
         }
     }
