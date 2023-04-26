@@ -64,7 +64,7 @@ class Server extends HttpServer implements ServerInterface
         while (true) {
             try {
                 $connection = $this->acceptConnection();
-                $this->connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection, &$connectionCoroutineMap) {
+                $this->connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection) {
                     try {
                         while (true) {
                             $request = null;
