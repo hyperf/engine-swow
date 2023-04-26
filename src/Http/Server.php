@@ -29,6 +29,9 @@ class Server extends HttpServer implements ServerInterface
 
     public ?int $port = null;
 
+    /** @var array<int, Coroutine> */
+    protected array $connectionCoroutineMap = [];
+
     /**
      * @var callable
      */
@@ -57,15 +60,17 @@ class Server extends HttpServer implements ServerInterface
     {
         $this->listen();
 
-        // 多个 server 自行在外层处理协程与 waitAll
+        // Create coroutine and waitAll in outside if you have multiple servers (such as hyperf/server:SwowServer.php)
         while (true) {
             try {
                 $connection = $this->acceptConnection();
-                Coroutine::create(function () use ($connection) {
+                $this->connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection) {
                     try {
                         while (true) {
                             $request = null;
                             try {
+                                // TODO: Risk of memory leak and attack when using `keep-alive`, recvHttpRequest() should handle the timeout logic.
+                                // issue: https://github.com/swow/swow/issues/184
                                 $request = $connection->recvHttpRequest();
                                 $handler = $this->handler;
                                 $handler($request, $connection);
@@ -79,6 +84,7 @@ class Server extends HttpServer implements ServerInterface
                     } catch (Throwable $exception) {
                         // $this->logger->critical((string) $exception);
                     } finally {
+                        unset($this->connectionCoroutineMap[$connection->getId()]);
                         $connection->close();
                     }
                 });
@@ -95,6 +101,15 @@ class Server extends HttpServer implements ServerInterface
                 }
             } catch (Throwable $exception) {
                 $this->logger->error((string) $exception);
+            }
+        }
+
+        // Close coroutines that are accepting connections when server stop.
+        // Don't worry about the unfinished application request. It's running in a new coroutine.
+        foreach ($this->connectionCoroutineMap as $connectionId => $connectionCoroutine) {
+            if ($connectionCoroutine->isAvailable()) {
+                $connectionCoroutine->kill();
+                unset($this->connectionCoroutineMap[$connectionId]);
             }
         }
     }
