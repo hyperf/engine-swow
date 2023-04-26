@@ -29,6 +29,9 @@ class Server extends HttpServer implements ServerInterface
 
     public ?int $port = null;
 
+    /** @var array<int, Coroutine> */
+    protected array $connectionCoroutineMap = [];
+
     /**
      * @var callable
      */
@@ -57,13 +60,11 @@ class Server extends HttpServer implements ServerInterface
     {
         $this->listen();
 
-        $connectionCoroutineMap = [];
-
         // Create coroutine and waitAll in outside if you have multiple servers (such as hyperf/server:SwowServer.php)
         while (true) {
             try {
                 $connection = $this->acceptConnection();
-                $connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection, &$connectionCoroutineMap) {
+                $this->connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection, &$connectionCoroutineMap) {
                     try {
                         while (true) {
                             $request = null;
@@ -83,7 +84,7 @@ class Server extends HttpServer implements ServerInterface
                     } catch (Throwable $exception) {
                         // $this->logger->critical((string) $exception);
                     } finally {
-                        unset($connectionCoroutineMap[$connection->getId()]);
+                        unset($this->connectionCoroutineMap[$connection->getId()]);
                         $connection->close();
                     }
                 });
@@ -105,10 +106,10 @@ class Server extends HttpServer implements ServerInterface
 
         // Close coroutines that are accepting connections when server stop.
         // Don't worry about the unfinished application request. It's running in a new coroutine.
-        foreach ($connectionCoroutineMap as $connectionId => $connectionCoroutine) {
+        foreach ($this->connectionCoroutineMap as $connectionId => $connectionCoroutine) {
             if ($connectionCoroutine->isAvailable()) {
                 $connectionCoroutine->kill();
-                unset($connectionCoroutineMap[$connectionId]);
+                unset($this->connectionCoroutineMap[$connectionId]);
             }
         }
     }
