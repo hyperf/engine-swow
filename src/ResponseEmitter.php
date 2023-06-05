@@ -48,11 +48,29 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                 }
             }
 
+            // fix use Hyperf\HttpMessage\Server\Response::withCookie but not used
+            // @link https://github.com/hyperf/hyperf/issues/5793
+            $response = $this->setCookies($response);
+
             $response = Psr7::setHeaders($response, $headers);
 
             $connection->sendHttpResponse($response);
         } catch (Exception $exception) {
             $this->logger?->critical((string) $exception);
         }
+    }
+
+    protected function setCookies(ResponseInterface $response): ResponseInterface
+    {
+        if (method_exists($response, 'getCookies')) {
+            foreach ((array)$response->getCookies() as $paths) {
+                foreach ($paths ?? [] as $item) {
+                    foreach ($item ?? [] as $cookie) {
+                        $response = $response->withAddedHeader('Set-Cookie', (string) $cookie);
+                    }
+                }
+            }
+        }
+        return $response;
     }
 }
