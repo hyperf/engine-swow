@@ -16,6 +16,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Engine\Contract\ResponseEmitterInterface;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
+use Stringable;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
@@ -66,7 +67,9 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
             foreach ((array)$response->getCookies() as $paths) {
                 foreach ($paths ?? [] as $item) {
                     foreach ($item ?? [] as $cookie) {
-                        $response = $response->withAddedHeader('Set-Cookie', (string) $cookie);
+                        if ($cookie instanceof Stringable) {
+                            $response = $response->withAddedHeader('Set-Cookie', (string) $cookie);
+                        }
                     }
                 }
             }
