@@ -20,6 +20,7 @@ use Stringable;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
+use Hyperf\Collection\Arr;
 
 class ResponseEmitter extends Emitter implements ResponseEmitterInterface
 {
@@ -64,13 +65,9 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
     protected function setCookies(ResponseInterface $response): ResponseInterface
     {
         if (method_exists($response, 'getCookies')) {
-            foreach ((array)$response->getCookies() as $paths) {
-                foreach ($paths ?? [] as $item) {
-                    foreach ($item ?? [] as $cookie) {
-                        if ($cookie instanceof Stringable) {
-                            $response = $response->withAddedHeader('Set-Cookie', (string) $cookie);
-                        }
-                    }
+            foreach (Arr::flatten((array) $response->getCookies(), 3) as $cookie) {
+                if ($cookie instanceof Stringable) {
+                    $response = $response->withAddedHeader('Set-Cookie', (string) $cookie);
                 }
             }
         }
