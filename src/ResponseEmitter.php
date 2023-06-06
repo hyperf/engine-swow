@@ -50,8 +50,6 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                 }
             }
 
-            // fix use Hyperf\HttpMessage\Server\Response::withCookie but not used
-            // @link https://github.com/hyperf/hyperf/issues/5793
             $response = $this->setCookies($response);
 
             $response = Psr7::setHeaders($response, $headers);
