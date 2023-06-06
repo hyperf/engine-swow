@@ -70,8 +70,6 @@ class Server extends HttpServer implements ServerInterface
                         while (true) {
                             $request = null;
                             try {
-                                // TODO: Risk of memory leak and attack when using `keep-alive`, recvHttpRequest() should handle the timeout logic.
-                                // issue: https://github.com/swow/swow/issues/184
                                 $request = $connection->recvHttpRequest();
                                 $handler = $this->handler;
                                 $handler($request, $connection);
