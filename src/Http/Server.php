@@ -64,13 +64,12 @@ class Server extends HttpServer implements ServerInterface
         while (true) {
             try {
                 $connection = $this->acceptConnection();
-                $this->connectionCoroutineMap[$connection->getId()] = Coroutine::create(function () use ($connection) {
+                Coroutine::create(function () use ($connection) {
+                    $this->connectionCoroutineMap[$connection->getId()] = Coroutine::getCurrent();
                     try {
                         while (true) {
                             $request = null;
                             try {
-                                // TODO: Risk of memory leak and attack when using `keep-alive`, recvHttpRequest() should handle the timeout logic.
-                                // issue: https://github.com/swow/swow/issues/184
                                 $request = $connection->recvHttpRequest();
                                 $handler = $this->handler;
                                 $handler($request, $connection);
