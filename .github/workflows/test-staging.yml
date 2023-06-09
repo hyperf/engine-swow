@@ -142,7 +142,7 @@ jobs:
         run: |
           echo "::group::Start testing"
           composer test
-  win-tests:
+  windows-tests:
     name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} Swow ${{ (github.event.inputs && github.event.inputs.swow_ref) || 'develop' }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
