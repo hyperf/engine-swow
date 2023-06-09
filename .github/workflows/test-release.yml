@@ -10,7 +10,7 @@ env:
   SKIP_SWOW_REQUIRED_EXTENSION_CHECK: 1
 
 jobs:
-  release-linux:
+  linux-tests:
     name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -73,7 +73,7 @@ jobs:
         run: |
           echo "::group::Start testing"
           composer test
-  release-macos:
+  macos-tests:
     name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -141,7 +141,7 @@ jobs:
         run: |
           echo "::group::Start testing"
           composer test
-  release-win:
+  windows-tests:
     name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:
