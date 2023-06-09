@@ -17,7 +17,7 @@ jobs:
       matrix:
         os: [ 'ubuntu-latest', 'macos-latest' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.1.0', 'v1.0.0']
+        swow-version: ['v1.3.0', 'v1.2.0', 'v1.1.0', 'v1.0.0']
       max-parallel: 32
       fail-fast: false
     steps:
