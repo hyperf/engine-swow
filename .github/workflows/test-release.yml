@@ -36,14 +36,21 @@ jobs:
           repository: swow/swow
           ref: ${{ matrix.swow-version }}
           path: swow
+      - name: Setup extension dependencies on MacOS
+        run: |
+          brew install pkg-config
+          brew install openssl@1.1
+          brew install curl
+          brew install lcov
+          brew install libpq postgresql
+        if: martix.os == 'macos-latest'
+      - name: Setup extension dependencies on Linux
+        run: |
+            sudo apt-get update
+            sudo apt-get install -yqq libcurl4-openssl-dev lcov
+        if: martix.os == 'ubuntu-latest'
       - name: Build Swow
         run: |
-          if [ ${{ runner.os }} = 'Linux' ]
-          then
-            printf "::group::\033[1mInstall dependencies\033[0m\n"
-            sudo apt-get update
-            sudo apt-get install -yqq libcurl4-openssl-dev
-          fi
           cd swow/ext
           printf "::group::\033[1mRun phpize\033[0m\n"
           phpize
