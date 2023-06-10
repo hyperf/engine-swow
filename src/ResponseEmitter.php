@@ -56,7 +56,8 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
             $response = Psr7::setHeaders($response, $headers);
 
             $content = $response->getBody();
-            if ($content instanceof FileInterface) {
+            // Compatible with swow version less than 1.2.0
+            if ($content instanceof FileInterface && method_exists($connection, 'sendFile')) {
                 $connection->sendfile($content->getFilename());
                 return;
             }
