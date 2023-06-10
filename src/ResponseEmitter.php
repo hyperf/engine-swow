@@ -12,15 +12,16 @@ declare(strict_types=1);
 namespace Hyperf\Engine;
 
 use Exception;
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Engine\Contract\ResponseEmitterInterface;
+use Hyperf\HttpMessage\Stream\FileInterface;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
 use Stringable;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
-use Hyperf\Collection\Arr;
 
 class ResponseEmitter extends Emitter implements ResponseEmitterInterface
 {
@@ -53,6 +54,12 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
             $response = $this->setCookies($response);
 
             $response = Psr7::setHeaders($response, $headers);
+
+            $content = $response->getBody();
+            if ($content instanceof FileInterface) {
+                $connection->sendfile($content->getFilename());
+                return;
+            }
 
             $connection->sendHttpResponse($response);
         } catch (Exception $exception) {
