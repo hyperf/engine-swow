@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\Engine;
 
 use Exception;
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Engine\Contract\ResponseEmitterInterface;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
@@ -20,7 +21,6 @@ use Stringable;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
-use Hyperf\Collection\Arr;
 
 class ResponseEmitter extends Emitter implements ResponseEmitterInterface
 {
