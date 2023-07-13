@@ -142,11 +142,13 @@ class Coroutine extends SwowCo implements CoroutineInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function exists(int $id): bool
     {
         return parent::get($id) !== null;
+    }
+
+    public static function hookFlags(): int
+    {
+        return 0;
     }
 }
