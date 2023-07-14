@@ -146,9 +146,4 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
         return parent::get($id) !== null;
     }
-
-    public static function hookFlags(): int
-    {
-        return 0;
-    }
 }
