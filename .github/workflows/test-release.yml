@@ -10,14 +10,14 @@ env:
   SKIP_SWOW_REQUIRED_EXTENSION_CHECK: 1
 
 jobs:
-  release-unix:
+  linux-tests:
     name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ 'ubuntu-latest', 'macos-latest' ]
+        os: [ 'ubuntu-latest' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.1.0', 'v1.0.0']
+        swow-version: ['v1.3.0', 'v1.2.0', 'v1.1.0', 'v1.0.0']
       max-parallel: 32
       fail-fast: false
     steps:
@@ -29,33 +29,31 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: phpize
           coverage: none
-          extensions: curl,openssl
+          extensions: curl,openssl,sockets,pdo
       - name: Checkout Swow
         uses: actions/checkout@v2
         with:
           repository: swow/swow
           ref: ${{ matrix.swow-version }}
           path: swow
+      - name: Setup extension dependencies
+        run: |
+            sudo apt-get update
+            sudo apt-get install -yqq libcurl4-openssl-dev lcov
       - name: Build Swow
         run: |
-          if [ ${{ runner.os }} = 'Linux' ]
-          then
-            printf "::group::\033[1mInstall dependencies\033[0m\n"
-            sudo apt-get update
-            sudo apt-get install -yqq libcurl4-openssl-dev
-          fi
           cd swow/ext
           printf "::group::\033[1mRun phpize\033[0m\n"
           phpize
           printf "::group::\033[1mStart configure\033[0m\n"
           ./configure \
             --enable-swow-debug \
-            --enable-swow-ssl=${{ runner.os == 'Linux' && 'yes' || '/usr/local/opt/openssl' }} \
-            --enable-swow-curl=${{ runner.os == 'Linux' && 'yes' || '/usr/local/opt/curl' }}
+            --enable-swow-ssl \
+            --enable-swow-curl
           printf "::group::\033[1mStart build Swow\033[0m\n"
-          make -j "$(${{ runner.os == 'Linux' && 'nproc' || 'sysctl -n hw.logicalcpu' }})"
+          make -j`nproc`
           printf "::group::\033[1mInstall Swow\033[0m\n"
-          ${{ runner.os == 'Linux' && 'sudo' || ''}} make install-modules
+          sudo make install-modules
           printf "::group::\033[1mEnable Swow\033[0m\n"
           inipath=`php --ini | sed -n 's/^Scan for additional .ini files in: //p'`
           sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
@@ -75,7 +73,75 @@ jobs:
         run: |
           echo "::group::Start testing"
           composer test
-  release-win:
+  macos-tests:
+    name: Test for PHP ${{ matrix.php-version }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'macos-latest' ]
+        php-version: [ '8.0', '8.1', '8.2' ]
+        swow-version: [ 'v1.3.0', 'v1.2.0', 'v1.1.0', 'v1.0.0' ]
+      max-parallel: 32
+      fail-fast: false
+    steps:
+      - name: Checkout self
+        uses: actions/checkout@v2
+      - name: Setup extension dependencies
+        run: |
+          brew install pkg-config
+          brew install openssl
+          brew install curl
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          coverage: none
+          extensions: curl,openssl,sockets,pdo
+      - name: Checkout Swow
+        uses: actions/checkout@v2
+        with:
+          repository: swow/swow
+          ref: ${{ matrix.swow-version }}
+          path: swow
+      - name: Detect dependencies path from php-config
+        run: |
+          echo "OPENSSL_ROOT_DIR=$(php .github/workflows/detect-deps.php openssl)" >> $GITHUB_ENV
+          echo "CURL_ROOT_DIR=$(php .github/workflows/detect-deps.php curl)" >> $GITHUB_ENV
+      - name: Build Swow
+        run: |
+          cd swow/ext
+          printf "::group::\033[1mRun phpize\033[0m\n"
+          phpize
+          printf "::group::\033[1mStart configure\033[0m\n"
+          ./configure \
+            --enable-swow-debug \
+            --enable-swow-ssl=${{ env.OPENSSL_ROOT_DIR }} \
+            --enable-swow-curl=${{ env.CURL_ROOT_DIR }} 
+          printf "::group::\033[1mStart build Swow\033[0m\n"
+          make -j`sysctl -n hw.logicalcpu`
+          printf "::group::\033[1mInstall Swow\033[0m\n"
+          make install-modules
+          printf "::group::\033[1mEnable Swow\033[0m\n"
+          inipath=`php --ini | sed -n 's/^Scan for additional .ini files in: //p'`
+          sudo sh -c "echo extension=swow > ${inipath}/swow.ini"
+          php --ri swow
+      - name: Setup Packages
+        run: |
+          composer update -oW
+          composer require swow/swow:${{ matrix.swow-version}}
+      - name: Run Server
+        run: |
+          php examples/http_server.php & disown
+          php examples/tcp_server.php & disown
+          php examples/websocket_server.php & disown
+          php examples/udp_server.php & disown
+          php examples/http_server_v2.php & disown
+      - name: Run Test Cases
+        run: |
+          echo "::group::Start testing"
+          composer test
+  windows-tests:
     name: Test for PHP ${{ matrix.php-version }} ${{ matrix.ts }} with Swow ${{ matrix.swow-version }} on ${{ matrix.os }}
     runs-on: "${{ matrix.os }}"
     strategy:

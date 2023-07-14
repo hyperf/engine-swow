@@ -37,4 +37,9 @@ class Response implements ResponseInterface
     {
         return $this->connection->getFd();
     }
+
+    public function close(): bool
+    {
+        return $this->connection->close();
+    }
 }
