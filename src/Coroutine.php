@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace Hyperf\Engine;
 
 use ArrayObject;
@@ -41,6 +42,11 @@ class Coroutine extends SwowCo implements CoroutineInterface
         while (! empty($this->deferCallbacks)) {
             array_shift($this->deferCallbacks)();
         }
+    }
+
+    public static function isCoroutineAvailable(): bool
+    {
+        return class_exists(SwowCo::class);
     }
 
     public function execute(...$data): static
@@ -95,9 +101,7 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return $coroutine->getParentId();
     }
 
-    public static function set(array $config): void
-    {
-    }
+    public static function set(array $config): void {}
 
     public static function getContextFor(?int $id = null): ?ArrayObject
     {
