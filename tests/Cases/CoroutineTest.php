@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace HyperfTest\Cases;
 
 use ArrayObject;
@@ -45,8 +46,7 @@ class CoroutineTest extends AbstractTestCase
 
     public function testCoroutineContext()
     {
-        $coroutine = new Coroutine(function () {
-        });
+        $coroutine = new Coroutine(function () {});
         $this->assertInstanceOf(ArrayObject::class, $coroutine->getContext());
         $coroutine->getContext()['name'] = 'Hyperf';
         $this->assertSame('Hyperf', $coroutine->getContext()['name']);
@@ -94,8 +94,7 @@ class CoroutineTest extends AbstractTestCase
 
     public function testCoroutinePidHasBeenDestroyed()
     {
-        $co = Coroutine::create(function () {
-        });
+        $co = Coroutine::create(function () {});
 
         try {
             Coroutine::pid($co->getId());
