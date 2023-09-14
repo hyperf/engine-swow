@@ -44,11 +44,6 @@ class Coroutine extends SwowCo implements CoroutineInterface
         }
     }
 
-    public static function isCoroutineAvailable(): bool
-    {
-        return class_exists(SwowCo::class);
-    }
-
     public function execute(...$data): static
     {
         $this->resume(...$data);
