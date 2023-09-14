@@ -96,7 +96,9 @@ class Coroutine extends SwowCo implements CoroutineInterface
         return $coroutine->getParentId();
     }
 
-    public static function set(array $config): void {}
+    public static function set(array $config): void
+    {
+    }
 
     public static function getContextFor(?int $id = null): ?ArrayObject
     {
