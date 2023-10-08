@@ -20,6 +20,7 @@ use Swow\Psr7\Message\RequestPlusInterface;
 use Swow\Psr7\Message\UpgradeType;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
+use Swow\SocketException;
 use Swow\WebSocket\Opcode;
 use Swow\WebSocket\WebSocket as SwowWebSocket;
 
@@ -52,7 +53,13 @@ class WebSocket implements WebSocketInterface
     public function start(): void
     {
         while (true) {
-            $frame = $this->connection->recvWebSocketFrame();
+            try {
+                $frame = $this->connection->recvWebSocketFrame();
+            } catch (SocketException) {
+                // 连接断开了
+                $this->close();
+                break;
+            }
             $opcode = $frame->getOpcode();
             switch ($opcode) {
                 case Opcode::PING:
@@ -61,8 +68,7 @@ class WebSocket implements WebSocketInterface
                 case Opcode::PONG:
                     break;
                 case Opcode::CLOSE:
-                    $callback = $this->events[static::ON_CLOSE];
-                    $callback($this->connection, $this->connection->getFd());
+                    $this->close();
                     break 2;
                 default:
                     $callback = $this->events[static::ON_MESSAGE];
@@ -72,6 +78,12 @@ class WebSocket implements WebSocketInterface
 
         $this->connection = null;
         $this->events = [];
+    }
+
+    private function close(): void
+    {
+        $callback = $this->events[static::ON_CLOSE];
+        $callback($this->connection, $this->connection->getFd());
     }
 
     private function throwBadRequestException()
