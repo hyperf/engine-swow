@@ -20,6 +20,7 @@ use Swow\Psr7\Message\RequestPlusInterface;
 use Swow\Psr7\Message\UpgradeType;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
+use Swow\SocketException;
 use Swow\WebSocket\Opcode;
 use Swow\WebSocket\WebSocket as SwowWebSocket;
 
@@ -51,23 +52,28 @@ class WebSocket implements WebSocketInterface
 
     public function start(): void
     {
-        while (true) {
-            $frame = $this->connection->recvWebSocketFrame();
-            $opcode = $frame->getOpcode();
-            switch ($opcode) {
-                case Opcode::PING:
-                    $this->connection->send(SwowWebSocket::PONG_FRAME);
-                    break;
-                case Opcode::PONG:
-                    break;
-                case Opcode::CLOSE:
-                    $callback = $this->events[static::ON_CLOSE];
-                    $callback($this->connection, $this->connection->getFd());
-                    break 2;
-                default:
-                    $callback = $this->events[static::ON_MESSAGE];
-                    $callback($this->connection, $frame);
+        try {
+            while (true) {
+                $frame = $this->connection->recvWebSocketFrame();
+                $opcode = $frame->getOpcode();
+                switch ($opcode) {
+                    case Opcode::PING:
+                        $this->connection->send(SwowWebSocket::PONG_FRAME);
+                        break;
+                    case Opcode::PONG:
+                        break;
+                    case Opcode::CLOSE:
+                        $callback = $this->events[static::ON_CLOSE];
+                        $callback($this->connection, $this->connection->getFd());
+                        break 2;
+                    default:
+                        $callback = $this->events[static::ON_MESSAGE];
+                        $callback($this->connection, $frame);
+                }
             }
+        } catch (SocketException) {
+            $callback = $this->events[static::ON_CLOSE];
+            $callback($this->connection, $this->connection->getFd());
         }
 
         $this->connection = null;
