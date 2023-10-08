@@ -63,15 +63,13 @@ class WebSocket implements WebSocketInterface
                     case Opcode::PONG:
                         break;
                     case Opcode::CLOSE:
-                        $callback = $this->events[static::ON_CLOSE];
-                        $callback($this->connection, $this->connection->getFd());
                         break 2;
                     default:
                         $callback = $this->events[static::ON_MESSAGE];
                         $callback($this->connection, $frame);
                 }
             }
-        } catch (SocketException) {
+        } finally {
             $callback = $this->events[static::ON_CLOSE];
             $callback($this->connection, $this->connection->getFd());
         }
