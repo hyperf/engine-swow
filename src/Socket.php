@@ -17,7 +17,7 @@ use Swow;
 
 class Socket extends Swow\Socket implements SocketInterface
 {
-    public function sendAll(string $data, float $timeout = 0): int|false
+    public function sendAll(string $data, float $timeout = 0): false|int
     {
         if ($timeout > 0) {
             $this->send($data, timeout: intval($timeout * 1000));
@@ -27,7 +27,7 @@ class Socket extends Swow\Socket implements SocketInterface
         return strlen($data);
     }
 
-    public function recvAll(int $length = 65536, float $timeout = 0): string|false
+    public function recvAll(int $length = 65536, float $timeout = 0): false|string
     {
         if ($timeout > 0) {
             return $this->readString($length, intval($timeout * 1000));
@@ -35,7 +35,7 @@ class Socket extends Swow\Socket implements SocketInterface
         return $this->readString($length);
     }
 
-    public function recvPacket(float $timeout = 0): string|false
+    public function recvPacket(float $timeout = 0): false|string
     {
         return false;
     }

@@ -20,7 +20,6 @@ use Swow\Psr7\Message\RequestPlusInterface;
 use Swow\Psr7\Message\UpgradeType;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\ServerConnection;
-use Swow\SocketException;
 use Swow\WebSocket\Opcode;
 use Swow\WebSocket\WebSocket as SwowWebSocket;
 

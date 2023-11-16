@@ -88,7 +88,7 @@ class Server extends HttpServer implements ServerInterface
                         $connection->close();
                     }
                 });
-            } catch (SocketException|CoroutineException $exception) {
+            } catch (CoroutineException|SocketException $exception) {
                 if (in_array($exception->getCode(), [Errno::EMFILE, Errno::ENFILE, Errno::ENOMEM], true)) {
                     $this->logger->warning('Socket resources have been exhausted.');
                     sleep(1);
