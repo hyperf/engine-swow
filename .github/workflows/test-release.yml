@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.3.0', 'v1.2.0', 'v1.1.0', 'v1.0.0']
+        php-version: [ '8.1', '8.2', '8.3' ]
+        swow-version: [ 'v1.4.1' ]
       max-parallel: 32
       fail-fast: false
     steps:
@@ -38,8 +38,8 @@ jobs:
           path: swow
       - name: Setup extension dependencies
         run: |
-            sudo apt-get update
-            sudo apt-get install -yqq libcurl4-openssl-dev lcov
+          sudo apt-get update
+          sudo apt-get install -yqq libcurl4-openssl-dev lcov
       - name: Build Swow
         run: |
           cd swow/ext
@@ -148,7 +148,7 @@ jobs:
       matrix:
         os: [ 'windows-2019' ]
         php-version: [ '8.0', '8.1', '8.2' ]
-        swow-version: ['v1.1.0', 'v1.0.0']
+        swow-version: [ 'v1.1.0', 'v1.0.0' ]
         ts: [ 'nts', 'ts' ]
       max-parallel: 32
       fail-fast: false

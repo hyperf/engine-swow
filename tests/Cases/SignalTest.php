@@ -15,6 +15,8 @@ namespace HyperfTest\Cases;
 use Hyperf\Engine\Signal;
 use Swow\Signal as SwowSignal;
 
+use function Hyperf\Coroutine\go;
+
 /**
  * @internal
  * @coversNothing
