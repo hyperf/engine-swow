@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        php-version: [ '8.0', '8.1', '8.2' ]
+        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
       max-parallel: 6
       fail-fast: false
     steps:
@@ -82,7 +82,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'macos-latest' ]
-        php-version: [ '8.0', '8.1', '8.2' ]
+        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
       max-parallel: 32
       fail-fast: false
     steps:
@@ -148,7 +148,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'windows-2019' ]
-        php-version: [ '8.0', '8.1' ]
+        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
         ts: [ 'nts', 'ts' ]
       max-parallel: 6
       fail-fast: false
