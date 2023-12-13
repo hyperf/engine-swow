@@ -61,7 +61,7 @@ jobs:
       - name: Setup Packages
         run: |
           composer update -oW
-          composer require swow/swow:${{ matrix.swow-version}}
+          composer require swow/swow:${{ matrix.swow-version}} -W
       - name: Run Server
         run: |
           php examples/http_server.php & disown
