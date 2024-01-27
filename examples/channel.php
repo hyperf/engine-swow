@@ -9,9 +9,10 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-// $channel->pop(1);
+use Swoole\Coroutine;
+use Swoole\Coroutine\Channel;
 
-\Swoole\Coroutine::create(function () {
-    $channel = new \Swoole\Coroutine\Channel();
+Coroutine::create(function () {
+    $channel = new Channel();
     $channel->pop(1);
 });
