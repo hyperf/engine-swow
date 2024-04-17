@@ -23,9 +23,9 @@ class HttpTest extends AbstractTestCase
 {
     public function testHttpPackRequest()
     {
-        $data = Http::packRequest('GET', 'https://www.baidu.com', ['Content-Type' => 'application/json'], 'Hello World');
+        $data = Http::packRequest('GET', '/', ['Content-Type' => 'application/json'], 'Hello World');
 
-        $this->assertSame("GET https://www.baidu.com HTTP/1.1\r
+        $this->assertSame("GET / HTTP/1.1\r
 Content-Type: application/json\r
 \r
 Hello World", $data);
