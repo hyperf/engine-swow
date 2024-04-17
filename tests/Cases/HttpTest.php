@@ -25,19 +25,13 @@ class HttpTest extends AbstractTestCase
     {
         $data = Http::packRequest('GET', '/', ['Content-Type' => 'application/json'], 'Hello World');
 
-        $this->assertSame("GET / HTTP/1.1\r
-Content-Type: application/json\r
-\r
-Hello World", $data);
+        $this->assertSame("GET / HTTP/1.1\r\nContent-Type: application/json\r\n\r\nHello World", $data);
     }
 
     public function testHttpPackResponse()
     {
         $data = Http::packResponse(200, 'OK', ['Content-Type' => 'application/json'], 'Hello World');
 
-        $this->assertSame("HTTP/1.1 200 OK\r
-Content-Type: application/json\r
-\r
-Hello World", $data);
+        $this->assertSame("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\nHello World", $data);
     }
 }

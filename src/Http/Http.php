@@ -18,11 +18,11 @@ use Swow\Http\Http as SwowHttp;
 
 class Http implements HttpContract
 {
-    public static function packRequest(string $method, string|Stringable $uri, array $headers = [], string|Stringable $body = '', string $protocolVersion = HttpContract::DEFAULT_PROTOCOL_VERSION): string
+    public static function packRequest(string $method, string|Stringable $path, array $headers = [], string|Stringable $body = '', string $protocolVersion = HttpContract::DEFAULT_PROTOCOL_VERSION): string
     {
         return SwowHttp::packRequest(
             $method,
-            $uri,
+            $path,
             $headers,
             $body,
             $protocolVersion
