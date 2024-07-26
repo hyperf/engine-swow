@@ -38,6 +38,7 @@
         "psr/log": "^1.0|^2.0|^3.0"
     },
     "suggest": {
+        "hyperf/di": "Required to use ConfigProvider.",
         "hyperf/http-server": "Required to use ResponseEmitter.",
         "psr/log": "Required to use HttpServer.",
         "hyperf/contract": "Required to use ServerFactory."

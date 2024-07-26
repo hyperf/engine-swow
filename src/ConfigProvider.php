@@ -15,13 +15,15 @@ namespace Hyperf\Engine;
 use Hyperf\Engine\Contract\Socket\SocketFactoryInterface;
 use Hyperf\Engine\Socket\SocketFactory;
 
+use function Hyperf\Support\make;
+
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'dependencies' => [
-                \Hyperf\HttpServer\ResponseEmitter::class => ResponseEmitter::class,
+                \Hyperf\HttpServer\ResponseEmitter::class => fn () => make(ResponseEmitter::class),
                 SocketFactoryInterface::class => SocketFactory::class,
             ],
         ];
