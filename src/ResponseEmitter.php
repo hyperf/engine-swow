@@ -16,6 +16,7 @@ use Exception;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Engine\Contract\ResponseEmitterInterface;
+use Hyperf\HttpMessage\Stream\FileInterface;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
 use Stringable;
@@ -54,6 +55,13 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
             $response = $this->setCookies($response);
 
             $response = Psr7::setHeaders($response, $headers);
+
+            $content = $response->getBody();
+            // Compatible with swow version less than 1.2.0
+            if ($content instanceof FileInterface && method_exists($connection, 'sendFile')) {
+                $connection->sendfile($content->getFilename());
+                return;
+            }
 
             $connection->sendHttpResponse($response);
         } catch (Exception $exception) {
