@@ -16,6 +16,8 @@ use Exception;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Engine\Contract\ResponseEmitterInterface;
+use Hyperf\Engine\Http\WritableConnection;
+use Hyperf\HttpMessage\Server\Response;
 use Hyperf\HttpServer\ResponseEmitter as Emitter;
 use Psr\Http\Message\ResponseInterface;
 use Stringable;
@@ -38,6 +40,12 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
         try {
             if ($connection->getProtocolType() === ServerConnection::PROTOCOL_TYPE_WEBSOCKET) {
                 return;
+            }
+
+            if ($response instanceof Response && $connection = $response->getConnection()) {
+                if ($connection instanceof WritableConnection && $connection->isSent()) {
+                    return;
+                }
             }
 
             $headers = $response->getHeaders();

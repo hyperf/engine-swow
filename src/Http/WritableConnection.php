@@ -17,6 +17,8 @@ use Swow\Psr7\Server\ServerConnection;
 
 class WritableConnection implements Writable
 {
+    protected bool $sent = false;
+
     public function __construct(protected ServerConnection $response)
     {
     }
@@ -26,6 +28,8 @@ class WritableConnection implements Writable
         $this->response->write([
             sprintf("%s\r\n%s\r\n", dechex(strlen($data)), $data),
         ]);
+
+        $this->sent = true;
 
         return true;
     }
@@ -41,6 +45,14 @@ class WritableConnection implements Writable
     public function end(): bool
     {
         $this->response->write(["0\r\n", "\r\n"]);
+
+        $this->sent = true;
+
         return true;
+    }
+
+    public function isSent(): bool
+    {
+        return $this->sent;
     }
 }
