@@ -42,8 +42,8 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                 return;
             }
 
-            if ($response instanceof Response && $connection = $response->getConnection()) {
-                if ($connection instanceof WritableConnection && $connection->isSent()) {
+            if ($response instanceof Response && $writableConnection = $response->getConnection()) {
+                if ($writableConnection instanceof WritableConnection && $writableConnection->isSent()) {
                     return;
                 }
             }
