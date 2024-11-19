@@ -42,7 +42,7 @@ class WritableConnection implements Writable
         return $this->response;
     }
 
-    public function end(): bool
+    public function end(): ?bool
     {
         $this->response->write(["0\r\n", "\r\n"]);
 
