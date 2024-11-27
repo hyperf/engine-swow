@@ -48,6 +48,7 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                 }
             }
 
+            $response = $this->setCookies($response);
             $headers = $response->getHeaders();
             if ($response instanceof ResponsePlusInterface) {
                 $headers = $response->getStandardHeaders();
@@ -58,8 +59,6 @@ class ResponseEmitter extends Emitter implements ResponseEmitterInterface
                     $headers['Content-Length'] = strlen($body);
                 }
             }
-
-            $response = $this->setCookies($response);
 
             $response = Psr7::setHeaders($response, $headers);
 
