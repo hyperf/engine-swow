@@ -147,4 +147,14 @@ class Coroutine extends SwowCo implements CoroutineInterface
     {
         return parent::get($id) !== null;
     }
+
+    /**
+     * @return iterable<int>
+     */
+    public static function list(): iterable
+    {
+        foreach (parent::getAll() as $coroutine) {
+            yield $coroutine->getId();
+        }
+    }
 }
