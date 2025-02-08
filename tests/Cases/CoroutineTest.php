@@ -176,4 +176,22 @@ class CoroutineTest extends AbstractTestCase
         $this->assertSame(3, $channel->pop());
         $this->assertSame(5, $channel->pop());
     }
+
+    public function testCoroutineList()
+    {
+        $list = Coroutine::list();
+        $this->assertIsIterable($list);
+        $this->assertContains(Coroutine::id(), $list);
+
+        Coroutine::create(function () {
+            sleep(1);
+        });
+        Coroutine::create(function () {
+            sleep(1);
+        });
+        Coroutine::create(function () {
+            sleep(1);
+        });
+        $this->assertEquals(5, iterator_count(Coroutine::list()));
+    }
 }
