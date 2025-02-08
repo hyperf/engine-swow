@@ -153,6 +153,6 @@ class Coroutine extends SwowCo implements CoroutineInterface
      */
     public static function list(): iterable
     {
-        yield from array_map(fn ($coroutine) => $coroutine->getId(), parent::getAll());
+        yield from array_keys(parent::getAll());
     }
 }
