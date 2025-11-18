@@ -16,8 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        php-version: [ '8.1', '8.2', '8.3' ]
-        swow-version: [ 'v1.4.1' ]
+        php-version: [ '8.4', '8.3', '8.2', '8.1' ]
+        swow-version: [ 'v1.6.2' ]
       max-parallel: 32
       fail-fast: false
     steps:

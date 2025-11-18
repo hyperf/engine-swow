@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        php-version: [ '8.0', '8.1', '8.2', '8.3' ]
+        php-version: [ '8.4', '8.3', '8.2', '8.1' ]
       max-parallel: 6
       fail-fast: false
     steps:
