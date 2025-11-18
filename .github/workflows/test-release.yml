@@ -79,8 +79,8 @@ jobs:
     strategy:
       matrix:
         os: [ 'macos-latest' ]
-        php-version: [ '8.1', '8.2', '8.3' ]
-        swow-version: [ 'v1.4.1' ]
+        php-version: [ '8.4', '8.3', '8.2', '8.1' ]
+        swow-version: [ 'v1.6.2' ]
       max-parallel: 32
       fail-fast: false
     steps:
@@ -147,8 +147,8 @@ jobs:
     strategy:
       matrix:
         os: [ 'windows-2019' ]
-        php-version: [ '8.1', '8.2', '8.3' ]
-        swow-version: [ 'v1.4.1' ]
+        php-version: [ '8.4', '8.3', '8.2', '8.1' ]
+        swow-version: [ 'v1.6.2' ]
         ts: [ 'nts', 'ts' ]
       max-parallel: 32
       fail-fast: false
