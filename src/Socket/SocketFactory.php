@@ -25,6 +25,9 @@ class SocketFactory implements SocketFactoryInterface
     public function make(SocketOptionInterface $option): SocketInterface
     {
         $socket = new Socket(Swow\Socket::TYPE_TCP);
+
+        $socket->setSocketOption($option);
+
         if ($protocol = $option->getProtocol()) {
             // TODO: Set Protocol
         }
