@@ -12,11 +12,24 @@ declare(strict_types=1);
 
 namespace Hyperf\Engine;
 
+use Hyperf\Engine\Contract\Socket\SocketOptionInterface;
 use Hyperf\Engine\Contract\SocketInterface;
 use Swow;
 
 class Socket extends Swow\Socket implements SocketInterface
 {
+    protected ?SocketOptionInterface $option = null;
+
+    public function setSocketOption(SocketOptionInterface $option): void
+    {
+        $this->option = $option;
+    }
+
+    public function getSocketOption(): ?SocketOptionInterface
+    {
+        return $this->option;
+    }
+
     public function sendAll(string $data, float $timeout = 0): false|int
     {
         if ($timeout > 0) {

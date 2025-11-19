@@ -21,11 +21,11 @@
         }
     },
     "replace": {
-        "hyperf/engine": "~2.14.0"
+        "hyperf/engine": "~2.15.0"
     },
     "require": {
         "php": ">=8.0",
-        "hyperf/engine-contract": "~1.13.0",
+        "hyperf/engine-contract": "~1.14.0",
         "swow/swow": "^1.0"
     },
     "require-dev": {
