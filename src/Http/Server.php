@@ -18,6 +18,8 @@ use Psr\Log\LoggerInterface;
 use Swow\CoroutineException;
 use Swow\Errno;
 use Swow\Http\Protocol\ProtocolException as HttpProtocolException;
+use Swow\Process\ProcessManager;
+use Swow\Process\WorkerContext;
 use Swow\Psr7\Psr7;
 use Swow\Psr7\Server\Server as HttpServer;
 use Swow\Socket;
@@ -29,6 +31,10 @@ class Server extends HttpServer implements ServerInterface
     public ?string $host = null;
 
     public ?int $port = null;
+
+    protected int $workerCount = 1;
+
+    protected ?ProcessManager $processManager = null;
 
     /** @var array<int, Coroutine> */
     protected array $connectionCoroutineMap = [];
@@ -57,11 +63,48 @@ class Server extends HttpServer implements ServerInterface
         return $this;
     }
 
+    /**
+     * Set number of worker processes.
+     * When > 1, the server uses prefork model: parent bind+listen, children accept.
+     */
+    public function setWorkerNum(int $count): static
+    {
+        $this->workerCount = max(1, $count);
+        return $this;
+    }
+
+    public function getWorkerNum(): int
+    {
+        return $this->workerCount;
+    }
+
     public function start(): void
     {
         $this->listen();
 
-        // Create coroutine and waitAll in outside if you have multiple servers (such as hyperf/server:SwowServer.php)
+        if ($this->workerCount > 1) {
+            $this->processManager = new ProcessManager($this->workerCount);
+            $this->processManager->start(function (WorkerContext $ctx): void {
+                $this->runAcceptLoop();
+            });
+        } else {
+            $this->runAcceptLoop();
+        }
+    }
+
+    public function close(): bool
+    {
+        if ($this->processManager !== null) {
+            $this->processManager->stop();
+            $this->processManager = null;
+            return true;
+        }
+
+        return parent::close();
+    }
+
+    protected function runAcceptLoop(): void
+    {
         while (true) {
             try {
                 $connection = $this->acceptConnection();
