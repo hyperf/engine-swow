@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Hyperf\Engine;
 
+use Swow\Psr7\Server\Server as Psr7Server;
 use Swow\Socket;
 
 class Constant
@@ -20,6 +21,7 @@ class Constant
 
     public static function isCoroutineServer($server): bool
     {
-        return $server instanceof Socket;
+        // Since Swow 2.x, the PSR-7 HTTP server no longer extends `Swow\Socket`.
+        return $server instanceof Socket || $server instanceof Psr7Server;
     }
 }
