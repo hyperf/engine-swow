@@ -17,6 +17,7 @@ use Hyperf\Engine\Http\Server as HttpServer;
 use Hyperf\Engine\Server;
 use Mockery;
 use Psr\Log\LoggerInterface;
+use stdClass;
 
 /**
  * @internal
@@ -39,5 +40,6 @@ class ConstantTest extends AbstractTestCase
         $logger = Mockery::mock(LoggerInterface::class);
         $this->assertTrue(Constant::isCoroutineServer(new HttpServer($logger)));
         $this->assertTrue(Constant::isCoroutineServer(new Server($logger)));
+        $this->assertFalse(Constant::isCoroutineServer(new stdClass()));
     }
 }
